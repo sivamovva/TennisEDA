@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # title of the app
 st.title('Novak Djokovic vs Roger Federer Head 2 Head Analysis')
 
-st.write('Roger Federer and Novak Djokovic are inarguably two of the greatest tennis players of all time. They played each other 50 times, with Novak winning 27 times and Roger winning 23 times. In this app, we will analyze the head to head matches between these two players and see if we can find any patterns or trends that can help us understand the dynamics of this matchup better.')
+st.write('Roger Federer and Novak Djokovic are two of the greatest tennis players of all time. They played each other 50 times, with Novak winning 27 times and Roger winning 23 times. In this app, we will analyze the head to head matches between these two players and see if we can find any patterns or trends that can help us understand the dynamics of this matchup better.')
 
 
 # Load the preprocessed data
