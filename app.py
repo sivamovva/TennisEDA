@@ -12,9 +12,9 @@ st.set_page_config(layout="wide")
 # title of the app
 st.title('Novak Djokovic vs Roger Federer Head 2 Head Analysis')
 
-st.write('Roger Federer and Novak Djokovic are two of the greatest tennis players of all time. They played each other 50 times, with Novak winning 27 times and Roger winning 23 times. In this app, we will analyze the head to head matches between these two players and see if we can find any patterns or trends that can help us understand the dynamics of this matchup better.')
+st.write("Roger Federer and Novak Djokovic are two of the greatest tennis players of all time. They played each other 50 times, with Novak winning 27 times and Roger winning 23 times. In this data app, we will analyze the head to head matches between these two players and see if we can find any patterns or trends that can help us understand the dynamics of this matchup better")
 
-# Create a sidebar with navigation options
+st.write('Below is a table with results of all the matches they played. To the right is a line plot showing Novak Djokovic win percentage by year')
 st.sidebar.title("Data Source Acknowledgement")
 
 
