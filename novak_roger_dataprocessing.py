@@ -68,10 +68,16 @@ df_concat_subset_grouped_by_year = df_concat_subset.groupby('year').agg({
     'Novak_Wins': 'mean',
     'tourney_date': 'size'  # This will give the count of rows per year
 }).reset_index()
+df_concat_subset_grouped_by_year['Novak_Wins'] = df_concat_subset_grouped_by_year['Novak_Wins'] * 100
 
 # Rename the 'tourney_date' column to 'match_count' for clarity
 df_concat_subset_grouped_by_year.rename(
-    columns={'tourney_date': 'match_count', 'Novak_Wins': 'Novak_win_rate'}, inplace=True)
+    columns={'tourney_date': 'Number_of_Matches_Played', 'Novak_Wins': 'Novak_win_percentage'}, inplace=True)
+
+# reorder columns
+df_concat_subset_grouped_by_year = df_concat_subset_grouped_by_year[[
+    'year', 'Number_of_Matches_Played', 'Novak_win_percentage']]
+
 df_concat_subset_grouped_by_year.to_csv(
     'novak_win_rate_by_year.csv', index=False)
 # %%
