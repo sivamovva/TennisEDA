@@ -1,8 +1,9 @@
+# %%
 # getting match summary data of all the atp matches from Jeff Sackmans github repo
 import requests
 import pandas as pd
 from io import StringIO
-
+# %%
 # Replace with your GitHub repository details
 user = 'JeffSackmann'
 repo = 'tennis_atp'
@@ -21,7 +22,7 @@ csv_files = [
 
 csv_base_url = f'https://raw.githubusercontent.com/{user}/{repo}/{branch}/'
 
-
+# %%
 dfs = []
 
 for csv_file in csv_files:
@@ -34,13 +35,14 @@ for csv_file in csv_files:
     else:
         print(f"Failed to fetch {csv_file}")
 
-
+# %%
 # concatenate all data into 1 file and then just take the subset of the 50 odd matches
 # that fed and novak played against eachother
 df_concat = pd.DataFrame()
 for i in range(len(dfs)):
     df_concat = pd.concat([df_concat, dfs[i]])
 
+# %%
 # getting just the subset of matches where Fed played Novak
 player_list = ['Roger Federer', 'Novak Djokovic']
 df_concat_subset = df_concat.query(
@@ -55,4 +57,21 @@ df_concat_subset['Novak_Wins'] = (
 df_concat_subset['year'] = df_concat_subset['tourney_date'].astype(
     'str').str[:4]
 
-df_concat_subset.to_csv('avg_novak_wins.csv', index=False)
+df_concat_subset.to_csv('roger_novak_matches.csv', index=False)
+
+# %%
+df_concat_subset.columns
+
+# %%
+# group by year and get the mean of the 'Novak_Wins' column and number of rows in each year
+df_concat_subset_grouped_by_year = df_concat_subset.groupby('year').agg({
+    'Novak_Wins': 'mean',
+    'tourney_date': 'size'  # This will give the count of rows per year
+}).reset_index()
+
+# Rename the 'tourney_date' column to 'match_count' for clarity
+df_concat_subset_grouped_by_year.rename(
+    columns={'tourney_date': 'match_count', 'Novak_Wins': 'Novak_win_rate'}, inplace=True)
+df_concat_subset_grouped_by_year.to_csv(
+    'novak_win_rate_by_year.csv', index=False)
+# %%
