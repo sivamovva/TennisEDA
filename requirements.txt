@@ -3,7 +3,7 @@ matplotlib
 pandas
 plotly
 seaborn
-sklearn
+scikit-learn
 
 
 
