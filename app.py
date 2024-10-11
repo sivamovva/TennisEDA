@@ -184,10 +184,18 @@ log_reg = LogisticRegression(max_iter=1000)
 log_reg.fit(X_train, y_train)
 y_pred = log_reg.predict(X_test)
 
-# Display the classification report
+# Display the classification report in a table format
 st.write("### Logistic Regression Model Performance")
 st.write("#### Classification Report")
-st.text(classification_report(y_test, y_pred))
+
+# Generate the classification report as a dictionary
+report = classification_report(y_test, y_pred, output_dict=True)
+
+# Convert the dictionary to a DataFrame for better display
+report_df = pd.DataFrame(report).transpose()
+
+# Display the DataFrame
+st.dataframe(report_df)
 
 # Display the accuracy
 accuracy = accuracy_score(y_test, y_pred)
