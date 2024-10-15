@@ -29,4 +29,34 @@ has details on return performance
 columns:
 match_id	player	row	pts	pts_won	returnable	returnable_won	in_play	in_play_won	winners	total_shots
 
-5) 
+5) Rally Shot direction outcome details - repo (tennis_matchchartingproject), file (charting-m-stats-shortdirectionoutcomes.csv) - This data doesnt include all shots - serve, return and many third shots not included. So generally gives a sense of shot direction once the players settle into a rally. Useful stuff, especially starting in the 2000's where rallies got longer
+
+6) Key Points - In tennis, all points are not equal. Performance on key points matters a lot - In this data set, key points are breakpoints (on serve and return), game points (serve and return) and deuce points(serve and return). 30-ALL is also a key point according to me, and there is raw data available to parse the stats on 30-ALL but i will save that for later. Currently going to use the summary stats available.
+
+repo (tennis_matchchartingproject), files (charting-m-stats-keypointsreturn.csv, charting-m-stats-keypointsserve.csv)
+
+7) Return depth details = repo(tennis_matchchartingproject), file(charting-m-stats-returndepth.csv)
+columns:
+match_id	player	row	returnable	shallow	deep	very_deep	unforced	err_net	err_deep	err_wide	err_wide_deep   
+
+
+Approach:
+
+1) First, aggregate the data at the match level. Each row is 1 match. Create a unique id column for each match - to use for dataset merging
+
+Features from #1 (many features will have 2 columns - 1 for winner, 1 for loser, some features will be just 1 column - like surface, how close the match was etc): 1st serve pct, surface, duration, measure of how close the match was, best_of_sets, aces as percentage of total serve points, double faults as percentage of total serve points, 1st serves won, 2nd serves won, breakpoints saved/faced ratio
+
+Target from #1 - Novak_Wins column (1 or 0 for each match) - this will be auto calculated for who ever has the H2H advantage
+
+Features from #3 (rally stats): (each will have 2 columns - for winner and loser)
+total winners, total forced errors, total unforced errors
+
+Features from #4:(return outcomes)
+% of returnable serves in play, % of points won when return in play
+
+
+
+
+2) Key points, Rally shot direction, and return depth, and serve direction - these all can be next level of detail. 
+
+
