@@ -146,6 +146,70 @@ def get_match_charting_data(player1, player2):
 
     return df_concat_subset
 
+# %%
+# get the rally stats file and do some preprocessing on it
+
+
+def get_rally_stats_data():
+    dfs = []
+
+    # this file has some trailing commas which is causing the read_csv function to fail, so
+    # adding columns_to_read explicitly
+    columns_to_read = ['match_id', 'row', 'pts', 'pl1_won', 'pl1_winners',
+                       'pl1_forced', 'pl1_unforced', 'pl2_won', 'pl2_winners',
+                       'pl2_forced', 'pl2_unforced']
+
+    for csv_file in match_charting_rally_stats:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, usecols=columns_to_read)
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.DataFrame()
+    for i in range(len(dfs)):
+        df_concat = pd.concat([df_concat, dfs[i]])
+
+    # Keep only rows where 'row' column is equal to 'Total'
+    df_concat = df_concat[df_concat['row'] == 'Total']
+
+    # Create percentage columns
+    df_concat['pl1_won_perc'] = df_concat['pl1_won'] * 100 / df_concat['pts']
+    df_concat['pl2_won_perc'] = df_concat['pl2_won'] * 100 / df_concat['pts']
+    df_concat['pl1_winners_perc'] = df_concat['pl1_winners'] * \
+        100 / df_concat['pts']
+    df_concat['pl2_winners_perc'] = df_concat['pl2_winners'] * \
+        100 / df_concat['pts']
+    df_concat['pl1_forced_perc'] = df_concat['pl1_forced'] * \
+        100 / df_concat['pts']
+    df_concat['pl2_forced_perc'] = df_concat['pl2_forced'] * \
+        100 / df_concat['pts']
+    df_concat['pl1_unforced_perc'] = df_concat['pl1_unforced'] * \
+        100 / df_concat['pts']
+    df_concat['pl2_unforced_perc'] = df_concat['pl2_unforced'] * \
+        100 / df_concat['pts']
+
+    # Round percentage columns to the nearest integer
+    df_concat['pl1_won_perc'] = df_concat['pl1_won_perc'].round(0).astype(int)
+    df_concat['pl2_won_perc'] = df_concat['pl2_won_perc'].round(0).astype(int)
+    df_concat['pl1_winners_perc'] = df_concat['pl1_winners_perc'].round(
+        0).astype(int)
+    df_concat['pl2_winners_perc'] = df_concat['pl2_winners_perc'].round(
+        0).astype(int)
+    df_concat['pl1_forced_perc'] = df_concat['pl1_forced_perc'].round(
+        0).astype(int)
+    df_concat['pl2_forced_perc'] = df_concat['pl2_forced_perc'].round(
+        0).astype(int)
+    df_concat['pl1_unforced_perc'] = df_concat['pl1_unforced_perc'].round(
+        0).astype(int)
+    df_concat['pl2_unforced_perc'] = df_concat['pl2_unforced_perc'].round(
+        0).astype(int)
+
+    return df_concat
+
 
 # %%
 # at a later point, i want to pass these 2 players from the streamlit app user selection
@@ -164,5 +228,8 @@ if len(df_concat_subset) >= 20:
 
 df_match_charting_master = get_match_charting_data(
     player1='Roger Federer', player2='Novak Djokovic')
+
+# %%
+df_charting_rally_stats = get_rally_stats_data()
 
 # %%
