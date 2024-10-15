@@ -22,9 +22,17 @@ csv_files_match_summary = [
 
 ]
 
+# list of CSV files in the match charting project repo. There is a women's file as well here but am only including the men's files for now.
+match_charting_master = ['charting-m-matches.csv']
+match_charting_rally_stats = [
+    'charting-m-stats-Rally.csv']
+match_charting_return_outcomes = [
+    'charting-m-stats-ReturnOutcomes.csv']
 
+
+# Base URL for the raw content of the CSV files
 csv_base_url_match_summary = f'https://raw.githubusercontent.com/{user}/{repo_match_summaries}/{branch}/'
-csv_base_url_match_point_by_point = f'https://raw.githubusercontent.com/{user}/{repo_match_point_by_point}/{branch}/'
+csv_base_url_match_charting = f'https://raw.githubusercontent.com/{user}/{repo_match_point_by_point}/{branch}/'
 csv_base_url_explore_data = f'https://raw.githubusercontent.com/{user}/{explore_repo}/{branch}/'
 
 
@@ -37,7 +45,7 @@ def get_player_match_subset(player1, player2):
         response = requests.get(url)
         if response.status_code == 200:
             csv_data = StringIO(response.text)
-            df = pd.read_csv(csv_data)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
             dfs.append(df)
         else:
             print(f"Failed to fetch {csv_file}")
@@ -64,6 +72,11 @@ def get_player_match_subset(player1, player2):
     # create a year column from the tourney_date column
     df_concat_subset['year'] = df_concat_subset['tourney_date'].astype(
         'str').str[:4]
+
+    # create unique match id column: concatenate year, tournament name, winner name and loser name (sorted alphabetically)
+    df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['tourney_name'] + '_' + \
+        df_concat_subset[['winner_name', 'loser_name']].apply(
+            lambda x: '_'.join(sorted(x)), axis=1)
 
     df_concat_subset.to_csv(f'{player1}_{player2}_matches.csv', index=False)
 
@@ -95,6 +108,44 @@ def get_win_rate_by_year(df_concat_subset, player1, player2, top_winner):
 
         return df_concat_subset_grouped_by_year
 
+# %%
+# get the match charting master data for the specified players
+
+
+def get_match_charting_data(player1, player2):
+    dfs = []
+
+    for csv_file in match_charting_master:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+
+            df = pd.read_csv(csv_data, on_bad_lines='skip', engine='python')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.DataFrame()
+    for i in range(len(dfs)):
+        df_concat = pd.concat([df_concat, dfs[i]])
+
+    player_list = [player1, player2]
+    df_concat_subset = df_concat.query(
+        '`Player 1` in @player_list and `Player 2` in @player_list')
+
+    df_concat_subset['year'] = df_concat_subset['Date'].astype(
+        'str').str[:4]
+
+    df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['Tournament'] + '_' + \
+        df_concat_subset[['Player 1', 'Player 2']].apply(
+            lambda x: '_'.join(sorted(x)), axis=1)
+
+    df_concat_subset.to_csv(
+        f'{player1}_{player2}_match_charting_data.csv', index=False)
+
+    return df_concat_subset
+
 
 # %%
 # at a later point, i want to pass these 2 players from the streamlit app user selection
@@ -107,5 +158,11 @@ if len(df_concat_subset) >= 20:
     df_concat_subset_grouped_by_year = get_win_rate_by_year(
         df_concat_subset, 'Roger Federer', 'Novak Djokovic', top_winner)
 
+
+# %%
+# get match charting master file
+
+df_match_charting_master = get_match_charting_data(
+    player1='Roger Federer', player2='Novak Djokovic')
 
 # %%
