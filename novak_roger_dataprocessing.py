@@ -329,6 +329,73 @@ def merge_atp_match_summary_and_match_charting_master_data(df_match_charting_mas
 
     return df_merged
 
+# %%
+# i want to create some new features with the df_merged_features_jumbled data set before i do feature alignment. The 3 new features are:
+# 1) winner_age_diff: difference in age between the winner and loser
+# 2) winner_rank_diff: difference in rank between the winner and loser
+# 3) measure of how tight the match was: if total sets played is equal to best of sets, then it was a tight match (1). If not, then it was not a tight match (0)
+
+
+def create_additional_features(df):
+    # Calculate the age difference between the winner and the loser
+    df['winner_age_diff'] = df['winner_age'].fillna(
+        0) - df['loser_age'].fillna(0)
+
+    # Calculate the rank difference between the winner and the loser
+    df['winner_rank_diff'] = df['winner_rank'].fillna(
+        0) - df['loser_rank'].fillna(0)
+    # determine number of sets played in the match
+    # Fill missing values in 'winner_age' and 'loser_age' with 0 before calculating age difference
+    df['winner_age'] = df['winner_age'].fillna(0)
+    df['loser_age'] = df['loser_age'].fillna(0)
+
+    # Fill missing values in 'winner_rank' and 'loser_rank' with 0 before calculating rank difference
+    df['winner_rank'] = df['winner_rank'].fillna(0)
+    df['loser_rank'] = df['loser_rank'].fillna(0)
+
+    # Fill missing values in 'score' with an empty string before splitting the score to determine sets played
+    df['score'] = df['score'].fillna('')
+    df['sets_played'] = df['score'].fillna('').str.split().apply(len)
+    # Determine if the match was tight based on the total sets played and best of sets
+    df['tight_match'] = df.apply(
+        lambda row: 1 if row['sets_played'] == row['Best of'] else 0, axis=1)
+
+    return df
+# %%
+
+
+def align_features_with_target(df):
+    # List of feature columns to swap between Player 1 and Player 2
+    feature_columns = [
+        'aces_perc', 'dfs_perc',
+        'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+        'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc', 'winners_bh_perc',
+        'unforced_fh_perc', 'unforced_bh_perc'
+    ]
+
+    # Iterate through each row in the DataFrame
+    for index, row in df.iterrows():
+        # Check if Player 2 is the winner
+        if row['winner_name'] == row['Player 2']:
+            # Swap the feature values between Player 1 and Player 2
+            for col in feature_columns:
+                p1_col = f'p1_{col}'
+                p2_col = f'p2_{col}'
+                # Swap the values of Player 1 and Player 2 for the current feature
+                df.at[index, p1_col], df.at[index,
+                                            p2_col] = row[p2_col], row[p1_col]
+
+    # Create a target variable: 1 if Player 1 wins, 0 if Player 2 wins
+    df['target'] = (df['winner_name'] == df['Player 1']).astype(int)
+
+    # Rename p1_ and p2_ prefixes to winner_ and loser_
+    df.rename(
+        columns={f'p1_{col}': f'winner_{col}' for col in feature_columns}, inplace=True)
+    df.rename(
+        columns={f'p2_{col}': f'loser_{col}' for col in feature_columns}, inplace=True)
+
+    return df
+
 
 # %%
 # at a later point, i want to pass these 2 players from the streamlit app user selection
@@ -369,3 +436,10 @@ df_merged_features_jumbled = merge_match_charting_feature_master_data(
     df_match_charting_master_merged_with_atp_match_summary, df_match_charting_overview_stats_processed_pivot)
 
 # %%
+# Apply the function to create additional features
+df_merged_features_jumbled_additional_features = create_additional_features(
+    df_merged_features_jumbled)
+# %%
+# get a subset of just required feature columns to pass to the align_features_with_target function
+# %%
+# Apply the function to align features with the target variable
