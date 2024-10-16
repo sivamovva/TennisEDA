@@ -243,6 +243,9 @@ def get_match_charting_overview_stats_data():
 def process_match_charting_overview_stats(df_match_charting_overview_stats):
     df = df_match_charting_overview_stats.copy()
 
+    # under player column, instead of 1 and 2, make it p1 and p2 for easier understanding of column names when the data is pivoted later
+    df['player'] = df['player'].replace({1: 'p1', 2: 'p2'})
+
     df['aces_perc'] = (df['aces'] * 100 / df['serve_pts'])
     df['dfs_perc'] = (df['dfs'] * 100 / df['serve_pts'])
     df['first_in_perc'] = (df['first_in'] * 100 /
@@ -283,7 +286,19 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     df['dfs_perc'] = df['dfs_perc'].round(2)
     df['winners_unforced_ratio'] = df['winners_unforced_ratio'].round(2)
 
-    return df
+    # drop duplicates before pivoting. Some times same match_id player combinations have multiple rows
+    df = df.drop_duplicates()
+
+    # pivot data such that there are separate columns for player1 and player2
+    df_pivot = df.pivot(index='match_id', columns='player', values=['serve_pts', 'aces', 'dfs', 'first_in',
+                                                                    'first_won', 'second_in', 'second_won', 'bk_pts', 'bp_saved',
+                                                                    'return_pts', 'return_pts_won', 'winners', 'winners_fh', 'winners_bh',
+                                                                    'unforced', 'unforced_fh', 'unforced_bh', 'aces_perc', 'dfs_perc',
+                                                                    'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+                                                                    'return_pts_won_perc', 'winners_unforced_ratio', 'winner_fh_perc',
+                                                                    'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'])
+
+    return df, df_pivot
 
 
 # %%
@@ -310,6 +325,6 @@ df_charting_rally_stats = get_rally_stats_data()
 df_match_charting_overview_stats = get_match_charting_overview_stats_data()
 # %%
 # Process the match charting overview stats data
-df_match_charting_overview_stats_processed = process_match_charting_overview_stats(
+df_match_charting_overview_stats_processed, df_match_charting_overview_stats_processed_pivot = process_match_charting_overview_stats(
     df_match_charting_overview_stats)
 # %%
