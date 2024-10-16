@@ -77,7 +77,7 @@ def get_player_match_subset(player1, player2):
 
     # create unique match id column: concatenate year, tournament name, winner name and loser name (sorted alphabetically)
     df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['tourney_name'] + '_' + \
-        df_concat_subset[['winner_name', 'loser_name']].apply(
+        df_concat_subset['round'] + '_' + df_concat_subset[['winner_name', 'loser_name']].apply(
             lambda x: '_'.join(sorted(x)), axis=1)
 
     df_concat_subset.to_csv(f'{player1}_{player2}_matches.csv', index=False)
@@ -140,7 +140,7 @@ def get_match_charting_master_data(player1, player2):
         'str').str[:4]
 
     df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['Tournament'] + '_' + \
-        df_concat_subset[['Player 1', 'Player 2']].apply(
+        df_concat_subset['Round'] + '_' + df_concat_subset[['Player 1', 'Player 2']].apply(
             lambda x: '_'.join(sorted(x)), axis=1)
 
     df_concat_subset.to_csv(
@@ -301,7 +301,33 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     # Flatten the multi-index columns
     df_pivot.columns = [f'{col[1]}_{col[0]}' for col in df_pivot.columns]
 
+    # reset index so match_id is a column
+    df_pivot.reset_index(inplace=True)
+
     return df, df_pivot
+
+# %%
+# function to merge the match charting master data (that has only subset of the matches of the 2 players) with the processed
+# match charting overview stats data (that has data from all matches)
+
+
+def merge_match_charting_feature_master_data(df_match_charting_master, df_match_charting_overview_stats_processed_pivot):
+    # merge the match charting master data with the processed match charting overview stats data
+    df_merged = pd.merge(df_match_charting_master, df_match_charting_overview_stats_processed_pivot,
+                         how='left', left_on='match_id', right_on='match_id')
+
+    return df_merged
+
+# %%
+# function to merge the match charting master data with the atp match summary data that has the winner name and score
+
+
+def merge_atp_match_summary_and_match_charting_master_data(df_match_charting_master, df_concat_subset):
+    # merge the match charting master data with the atp match summary data
+    df_merged = pd.merge(df_match_charting_master, df_concat_subset[['custom_match_id', 'winner_name', 'winner_age', 'winner_seed', 'winner_rank', 'loser_name', 'loser_age', 'loser_seed', 'loser_rank', 'score']],
+                         how='left', left_on='custom_match_id', right_on='custom_match_id')
+
+    return df_merged
 
 
 # %%
@@ -330,4 +356,9 @@ df_match_charting_overview_stats = get_match_charting_overview_stats_data()
 # Process the match charting overview stats data
 df_match_charting_overview_stats_processed, df_match_charting_overview_stats_processed_pivot = process_match_charting_overview_stats(
     df_match_charting_overview_stats)
+# %%
+# merge some useful columns like winner_name, score etc from the atp_summary data with the match charting master data
+df_match_charting_master_merged_with_atp_match_summary = merge_atp_match_summary_and_match_charting_master_data(
+    df_match_charting_master, df_concat_subset)
+
 # %%
