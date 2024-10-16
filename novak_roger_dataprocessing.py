@@ -28,6 +28,7 @@ match_charting_rally_stats = [
     'charting-m-stats-Rally.csv']
 match_charting_return_outcomes = [
     'charting-m-stats-ReturnOutcomes.csv']
+match_charting_overview_stats = ['charting-m-stats-Overview.csv']
 
 
 # Base URL for the raw content of the CSV files
@@ -112,7 +113,7 @@ def get_win_rate_by_year(df_concat_subset, player1, player2, top_winner):
 # get the match charting master data for the specified players
 
 
-def get_match_charting_data(player1, player2):
+def get_match_charting_master_data(player1, player2):
     dfs = []
 
     for csv_file in match_charting_master:
@@ -211,6 +212,28 @@ def get_rally_stats_data():
     return df_concat
 
 
+#%%
+def get_match_charting_overview_stats_data():
+    dfs = []
+
+    for csv_file in match_charting_overview_stats:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.DataFrame()
+    for i in range(len(dfs)):
+        df_concat = pd.concat([df_concat, dfs[i]])
+    
+    # Keep only rows where 'set' column is 'Total'
+    df_concat = df_concat[df_concat['set'] == 'Total']
+
+    return df_concat
 # %%
 # at a later point, i want to pass these 2 players from the streamlit app user selection
 df_concat_subset, top_winner = get_player_match_subset(
@@ -226,10 +249,11 @@ if len(df_concat_subset) >= 20:
 # %%
 # get match charting master file
 
-df_match_charting_master = get_match_charting_data(
+df_match_charting_master = get_match_charting_master_data(
     player1='Roger Federer', player2='Novak Djokovic')
 
 # %%
 df_charting_rally_stats = get_rally_stats_data()
-
+#%%
+df_match_charting_overview_stats = get_match_charting_overview_stats_data()
 # %%
