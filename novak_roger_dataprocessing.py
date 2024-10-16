@@ -3,6 +3,7 @@
 import requests
 import pandas as pd
 from io import StringIO
+import numpy as np
 # %%
 # Replace with your GitHub repository details
 user = 'JeffSackmann'
@@ -212,7 +213,7 @@ def get_rally_stats_data():
     return df_concat
 
 
-#%%
+# %%
 def get_match_charting_overview_stats_data():
     dfs = []
 
@@ -229,11 +230,62 @@ def get_match_charting_overview_stats_data():
     df_concat = pd.DataFrame()
     for i in range(len(dfs)):
         df_concat = pd.concat([df_concat, dfs[i]])
-    
+
     # Keep only rows where 'set' column is 'Total'
     df_concat = df_concat[df_concat['set'] == 'Total']
 
     return df_concat
+
+# %%
+# process the overview stats dataframe
+
+
+def process_match_charting_overview_stats(df_match_charting_overview_stats):
+    df = df_match_charting_overview_stats.copy()
+
+    df['aces_perc'] = (df['aces'] * 100 / df['serve_pts'])
+    df['dfs_perc'] = (df['dfs'] * 100 / df['serve_pts'])
+    df['first_in_perc'] = (df['first_in'] * 100 /
+                           df['serve_pts'])
+    df['first_won_perc'] = (df['first_won'] * 100 /
+                            df['first_in'])
+    df['second_won_perc'] = (df['second_won'] * 100 /
+                             df['second_in'])
+    df['bp_saved_perc'] = (df['bp_saved'] * 100 /
+                           df['bk_pts'])
+    df['return_pts_won_perc'] = (
+        df['return_pts_won'] * 100 / df['return_pts'])
+    df['winners_unforced_ratio'] = df['winners'] / df['unforced']
+    df['winner_fh_perc'] = (df['winners_fh'] * 100 /
+                            df['winners'])
+    df['winners_bh_perc'] = (df['winners_bh'] * 100 /
+                             df['winners'])
+    df['unforced_fh_perc'] = (
+        df['unforced_fh'] * 100 / df['unforced'])
+    df['unforced_bh_perc'] = (
+        df['unforced_bh'] * 100 / df['unforced'])
+
+    # Replace infinite values with NaN and then fill NaN values with 0
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)
+    df.fillna(0, inplace=True)
+
+    # Round the specified columns to integers
+    columns_to_round_int = [
+        'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+        'return_pts_won_perc', 'winner_fh_perc',
+        'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'
+    ]
+
+    df[columns_to_round_int] = df[columns_to_round_int].round(0).astype(int)
+
+    # Round 'aces_perc' and 'dfs_perc' to 2 decimal places
+    df['aces_perc'] = df['aces_perc'].round(2)
+    df['dfs_perc'] = df['dfs_perc'].round(2)
+    df['winners_unforced_ratio'] = df['winners_unforced_ratio'].round(2)
+
+    return df
+
+
 # %%
 # at a later point, i want to pass these 2 players from the streamlit app user selection
 df_concat_subset, top_winner = get_player_match_subset(
@@ -254,6 +306,10 @@ df_match_charting_master = get_match_charting_master_data(
 
 # %%
 df_charting_rally_stats = get_rally_stats_data()
-#%%
+# %%
 df_match_charting_overview_stats = get_match_charting_overview_stats_data()
+# %%
+# Process the match charting overview stats data
+df_match_charting_overview_stats_processed = process_match_charting_overview_stats(
+    df_match_charting_overview_stats)
 # %%
