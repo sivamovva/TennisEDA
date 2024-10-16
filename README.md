@@ -1,9 +1,9 @@
 # TennisEDA
 Exploratory data analysis of Tennis data
 
-Acknowledgement for data source: Jeff Sackmann's github repository where there are a library of tennis data sets at various levels of granularity. Licensed under Creative Commons Attribution. Thank you Jeff.
+Acknowledgement for data source: Jeff Sackmann's github repository where there are a library of tennis data sets at various levels of granularity. Licensed under Creative Commons Attribution. Thank you Jeff and collaborators.
 
-Figuring out if I can glean any insights in the Federer-Djokovic matchup. Their H2H record ended up really close, and they played a lot of matches (>50), so there could be some real patterns. 
+Figuring out if I can glean any insights in the Federer-Djokovic matchup. Their H2H record ended up really close, and they played a lot of matches (>50), so there could be some real patterns. Once I do this, eventually want to scale this to all professional tennis matches. 
 
 
 datasets of interest:
@@ -23,24 +23,24 @@ columns:
 match_id,player,set,serve_pts,aces,dfs,first_in,first_won,second_in,second_won,bk_pts,bp_saved,return_pts,return_pts_won,winners,winners_fh,winners_bh,unforced,unforced_fh,unforced_bh
 
 
-3) Now, for rally stats (winner, forced/unforced errors) - repo(tennis_matchchartingproject) , file (charting-m-stats-rally.csv)
+4) rally stats (winner, forced/unforced errors) - repo(tennis_matchchartingproject) , file (charting-m-stats-rally.csv)
 columns:
 match_id,row,pts,pl1_won,pl1_winners,pl1_forced,pl1_unforced,pl2_won,pl2_winners,pl2_forced,pl2_unforced
 
 can combine with #2 above to get nnames of pl1, pl2
 
-4) Serve return outcome details - repo(tennis_matchchartingproject), file(charting-m-stats-returnoutcomes.csv)
+5) Serve return outcome details - repo(tennis_matchchartingproject), file(charting-m-stats-returnoutcomes.csv)
 has details on return performance
 columns:
 match_id	player	row	pts	pts_won	returnable	returnable_won	in_play	in_play_won	winners	total_shots
 
-5) Rally Shot direction outcome details - repo (tennis_matchchartingproject), file (charting-m-stats-shortdirectionoutcomes.csv) - This data doesnt include all shots - serve, return and many third shots not included. So generally gives a sense of shot direction once the players settle into a rally. Useful stuff, especially starting in the 2000's where rallies got longer
+6) Rally Shot direction outcome details - repo (tennis_matchchartingproject), file (charting-m-stats-shortdirectionoutcomes.csv) - This data doesnt include all shots - serve, return and many third shots not included. So generally gives a sense of shot direction once the players settle into a rally. Useful stuff, especially starting in the 2000's where rallies got longer
 
-6) Key Points - In tennis, all points are not equal. Performance on key points matters a lot - In this data set, key points are breakpoints (on serve and return), game points (serve and return) and deuce points(serve and return). 30-ALL is also a key point according to me, and there is raw data available to parse the stats on 30-ALL but i will save that for later. Currently going to use the summary stats available.
+7) Key Points - In tennis, all points are not equal. Performance on key points matters a lot - In this data set, key points are breakpoints (on serve and return), game points (serve and return) and deuce points(serve and return). 30-ALL is also a key point according to me, and there is raw data available to parse the stats on 30-ALL but i will save that for later. Currently going to use the summary stats available.
 
 repo (tennis_matchchartingproject), files (charting-m-stats-keypointsreturn.csv, charting-m-stats-keypointsserve.csv)
 
-7) Return depth details = repo(tennis_matchchartingproject), file(charting-m-stats-returndepth.csv)
+8) Return depth details = repo(tennis_matchchartingproject), file(charting-m-stats-returndepth.csv)
 columns:
 match_id	player	row	returnable	shallow	deep	very_deep	unforced	err_net	err_deep	err_wide	err_wide_deep   
 
@@ -49,19 +49,17 @@ Approach:
 
 1) First, aggregate the data at the match level. Each row is 1 match. Create a unique id column for each match - to use for dataset merging
 
-Features from #1 (many features will have 2 columns - 1 for winner, 1 for loser, some features will be just 1 column - like surface, how close the match was etc): 1st serve pct, surface, duration, measure of how close the match was, best_of_sets, aces as percentage of total serve points, double faults as percentage of total serve points, 1st serves won, 2nd serves won, breakpoints saved/faced ratio
+2) Work with each of the feature data frames to engineer features (for eg create percentage columns etc)
+
+Features from #1 (many features will have 2 columns - 1 for winner, 1 for loser, some features will be just 1 column - like surface, how close the match was etc): 1st serve pct, surface, duration, measure of how close the match was, best_of_sets
 
 Target from #1 - Novak_Wins column (1 or 0 for each match) - this will be auto calculated for who ever has the H2H advantage
 
-Features from #3 (rally stats): (each will have 2 columns - for winner and loser)
-total winners, total forced errors, total unforced errors
+Features from #3 (overview stats): (each will have 2 columns - for winner and loser)
+'aces_perc', 'dfs_perc','first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc',
+'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'
 
-Features from #4:(return outcomes)
-% of returnable serves in play, % of points won when return in play
-
-
-
-
-2) Key points, Rally shot direction, and return depth, and serve direction - these all can be next level of detail. 
+3) Key points, return outcomes, Rally shot direction, and return depth, and serve direction - these all can be next level of detail. 
 
 
