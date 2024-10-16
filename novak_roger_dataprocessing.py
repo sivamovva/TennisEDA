@@ -258,7 +258,8 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
                            df['bk_pts'])
     df['return_pts_won_perc'] = (
         df['return_pts_won'] * 100 / df['return_pts'])
-    df['winners_unforced_ratio'] = df['winners'] / df['unforced']
+    df['winners_unforced_perc'] = df['winners']*100 / \
+        (df['unforced'] + df['winners'])
     df['winner_fh_perc'] = (df['winners_fh'] * 100 /
                             df['winners'])
     df['winners_bh_perc'] = (df['winners_bh'] * 100 /
@@ -275,7 +276,7 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     # Round the specified columns to integers
     columns_to_round_int = [
         'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
-        'return_pts_won_perc', 'winner_fh_perc',
+        'return_pts_won_perc', 'winner_fh_perc', 'winners_unforced_perc',
         'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'
     ]
 
@@ -284,7 +285,6 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     # Round 'aces_perc' and 'dfs_perc' to 2 decimal places
     df['aces_perc'] = df['aces_perc'].round(2)
     df['dfs_perc'] = df['dfs_perc'].round(2)
-    df['winners_unforced_ratio'] = df['winners_unforced_ratio'].round(2)
 
     # drop duplicates before pivoting. Some times same match_id player combinations have multiple rows
     df = df.drop_duplicates()
@@ -295,8 +295,11 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
                                                                     'return_pts', 'return_pts_won', 'winners', 'winners_fh', 'winners_bh',
                                                                     'unforced', 'unforced_fh', 'unforced_bh', 'aces_perc', 'dfs_perc',
                                                                     'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
-                                                                    'return_pts_won_perc', 'winners_unforced_ratio', 'winner_fh_perc',
+                                                                    'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc',
                                                                     'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'])
+
+    # Flatten the multi-index columns
+    df_pivot.columns = [f'{col[1]}_{col[0]}' for col in df_pivot.columns]
 
     return df, df_pivot
 
