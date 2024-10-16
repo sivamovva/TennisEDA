@@ -11,11 +11,16 @@ datasets of interest:
 columns: 
 tourney_id,tourney_name,surface,draw_size,tourney_level,tourney_date,match_num,winner_id,winner_seed,winner_entry,winner_name,winner_hand,winner_ht,winner_ioc,winner_age,loser_id,loser_seed,loser_entry,loser_name,loser_hand,loser_ht,loser_ioc,loser_age,score,best_of,round,minutes,w_ace,w_df,w_svpt,w_1stIn,w_1stWon,w_2ndWon,w_SvGms,w_bpSaved,w_bpFaced,l_ace,l_df,l_svpt,l_1stIn,l_1stWon,l_2ndWon,l_SvGms,l_bpSaved,l_bpFaced,winner_rank,winner_rank_points,loser_rank,loser_rank_points
 
+Note - this is the only dataset that has score and winner_name. All the datasets in the matchchartingproject repo just have player1, player2 based on who served first.
 
 2) Master datatable for point by point charting - repo (tennis_matchchartingproject), file(charting-m-matches.csv)
 This is to mainly see who is player1 (served first), and player 2 (served second)
 columns:
 match_id,Player 1,Player 2,Pl 1 hand,Pl 2 hand,Gender,Date,Tournament,Round,Time,Court,Surface,Umpire,Best of,Final TB?,Charted by 
+
+3) overview stats from charting data - repo (tennis_matchchartingproject), file(charting-m-stats-overview.csv)
+columns:
+match_id,player,set,serve_pts,aces,dfs,first_in,first_won,second_in,second_won,bk_pts,bp_saved,return_pts,return_pts_won,winners,winners_fh,winners_bh,unforced,unforced_fh,unforced_bh
 
 
 3) Now, for rally stats (winner, forced/unforced errors) - repo(tennis_matchchartingproject) , file (charting-m-stats-rally.csv)
