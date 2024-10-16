@@ -362,3 +362,10 @@ df_match_charting_master_merged_with_atp_match_summary = merge_atp_match_summary
     df_match_charting_master, df_concat_subset)
 
 # %%
+# merge the match charting master data with the processed match charting overview stats data with the feature columns. Note here, the features
+# purely based on p1, p2 ie who served first in the match, not based on who won the match. This is not useful yet for training. We need to
+# perform feature alignment based on who won the match and then create the final feature columns
+df_merged_features_jumbled = merge_match_charting_feature_master_data(
+    df_match_charting_master_merged_with_atp_match_summary, df_match_charting_overview_stats_processed_pivot)
+
+# %%
