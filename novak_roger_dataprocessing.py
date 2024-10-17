@@ -80,7 +80,8 @@ def get_player_match_subset(player1, player2):
         df_concat_subset['round'] + '_' + df_concat_subset[['winner_name', 'loser_name']].apply(
             lambda x: '_'.join(sorted(x)), axis=1)
 
-    df_concat_subset.to_csv(f'{player1}_{player2}_matches.csv', index=False)
+    df_concat_subset.to_csv(
+        f'selected_players_atp_matches_summary.csv', index=False)
 
     return df_concat_subset, top_winner
 
@@ -106,7 +107,7 @@ def get_win_rate_by_year(df_concat_subset, player1, player2, top_winner):
             'year', 'Number_of_Matches_Played', f'{top_winner}_win_percentage']]
 
         df_concat_subset_grouped_by_year.to_csv(
-            f'{player1}_{player2}_win_rate_by_year.csv', index=False)
+            f'selected_matchup_win_rate_by_year.csv', index=False)
 
         return df_concat_subset_grouped_by_year
 
@@ -144,7 +145,7 @@ def get_match_charting_master_data(player1, player2):
             lambda x: '_'.join(sorted(x)), axis=1)
 
     df_concat_subset.to_csv(
-        f'{player1}_{player2}_match_charting_data.csv', index=False)
+        f'selected_players_match_charting_master_data.csv', index=False)
 
     return df_concat_subset
 
