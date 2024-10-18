@@ -4,25 +4,36 @@ import requests
 import pandas as pd
 from io import StringIO
 import numpy as np
+import re
 # %%
 # Replace with your GitHub repository details
-user = 'JeffSackmann'
-repo_match_summaries = 'tennis_atp'
-repo_match_point_by_point = 'tennis_MatchChartingProject'
-explore_repo = 'tennis_MatchChartingProject'
-branch = 'master'
+data_source_user = 'JeffSackmann'
+data_source_repo_match_summaries = 'tennis_atp'
+data_source_repo_match_point_by_point = 'tennis_MatchChartingProject'
+data_source_branch = 'master'
 
-# List of CSV file paths in the repository that i am interested in - I am interested only in
-# Fed-Novak matches, so starting in 2006 till 2020
+my_repo = 'TennisEDA'
+my_username = 'sivamovva'
+my_branch = 'main'
+
+
+# List of CSV file paths in the repository that i am interested in
 csv_files_match_summary = [
-    'atp_matches_2006.csv', 'atp_matches_2007.csv', 'atp_matches_2008.csv',
-    'atp_matches_2009.csv', 'atp_matches_2010.csv', 'atp_matches_2011.csv',
+    'atp_matches_1990.csv', 'atp_matches_1991.csv', 'atp_matches_1992.csv',
+    'atp_matches_1993.csv', 'atp_matches_1994.csv', 'atp_matches_1995.csv',
+    'atp_matches_1996.csv', 'atp_matches_1997.csv', 'atp_matches_1998.csv',
+    'atp_matches_1999.csv', 'atp_matches_2000.csv', 'atp_matches_2001.csv',
+    'atp_matches_2002.csv', 'atp_matches_2003.csv', 'atp_matches_2004.csv',
+    'atp_matches_2005.csv', 'atp_matches_2006.csv', 'atp_matches_2007.csv',
+    'atp_matches_2008.csv', 'atp_matches_2009.csv', 'atp_matches_2010.csv', 'atp_matches_2011.csv',
     'atp_matches_2012.csv', 'atp_matches_2013.csv', 'atp_matches_2014.csv',
     'atp_matches_2015.csv', 'atp_matches_2016.csv', 'atp_matches_2017.csv',
-    'atp_matches_2018.csv', 'atp_matches_2019.csv', 'atp_matches_2020.csv'
+    'atp_matches_2018.csv', 'atp_matches_2019.csv', 'atp_matches_2020.csv',
+    'atp_matches_2021.csv', 'atp_matches_2022.csv', 'atp_matches_2023.csv',
 
 ]
 
+# %%
 # list of CSV files in the match charting project repo. There is a women's file as well here but am only including the men's files for now.
 match_charting_master = ['charting-m-matches.csv']
 match_charting_rally_stats = [
@@ -33,12 +44,77 @@ match_charting_overview_stats = ['charting-m-stats-Overview.csv']
 
 
 # Base URL for the raw content of the CSV files
-csv_base_url_match_summary = f'https://raw.githubusercontent.com/{user}/{repo_match_summaries}/{branch}/'
-csv_base_url_match_charting = f'https://raw.githubusercontent.com/{user}/{repo_match_point_by_point}/{branch}/'
-csv_base_url_explore_data = f'https://raw.githubusercontent.com/{user}/{explore_repo}/{branch}/'
+csv_base_url_match_summary = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_summaries}/{data_source_branch}/'
+csv_base_url_match_charting = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_point_by_point}/{data_source_branch}/'
+
+# url for concatenated master file parquet data. This is the file that i created by concatenating all the match summary files
+atp_match_summary_masterfile = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/'
 
 
 # %%
+# Function to concatenate all match summary CSV files and save as a parquet file
+def concatenate_and_save_match_summaries():
+    dfs = []
+
+    for csv_file in csv_files_match_summary:
+        url = csv_base_url_match_summary + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    # Concatenate all data into one DataFrame
+    df_concat = pd.concat(dfs, ignore_index=True)
+
+    # Save the concatenated DataFrame as a parquet file
+    df_concat.to_parquet('atp_matches_master.parquet', index=False)
+
+
+# %%
+# Call the function to concatenate and save the match summaries
+concatenate_and_save_match_summaries()
+
+
+# %%
+# Read the concatenated master file from the repo
+def get_player_match_subset(player1, player2):
+
+    master_file_url = 'https://raw.githubusercontent.com/your_username/your_repo/master/atp_matches_master.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # getting just the subset of matches where the specified players played against each other
+    player_list = [player1, player2]
+    df_concat_subset = df_concat.query(
+        'winner_name in @player_list and loser_name in @player_list')
+
+    # Determine the player with the higher win count
+    winner_counts = df_concat_subset['winner_name'].value_counts()
+    top_winner = winner_counts.idxmax()
+
+    # Create a binary column for the top winner
+    df_concat_subset[f'{top_winner}_wins'] = (
+        df_concat_subset['winner_name'] == top_winner).astype(int)
+
+    # create a year column from the tourney_date column
+    df_concat_subset['year'] = df_concat_subset['tourney_date'].astype(
+        'str').str[:4]
+
+    # create unique match id column: concatenate year, tournament name, winner name and loser name (sorted alphabetically)
+    df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['tourney_name'] + '_' + \
+        df_concat_subset['round'] + '_' + df_concat_subset[['winner_name', 'loser_name']].apply(
+            lambda x: '_'.join(sorted(x)), axis=1)
+
+    df_concat_subset.to_csv(
+        f'selected_players_atp_matches_summary.csv', index=False)
+
+    return df_concat_subset, top_winner
+
+
+"""
 def get_player_match_subset(player1, player2):
     dfs = []
 
@@ -83,7 +159,7 @@ def get_player_match_subset(player1, player2):
     df_concat_subset.to_csv(
         f'selected_players_atp_matches_summary.csv', index=False)
 
-    return df_concat_subset, top_winner
+    return df_concat_subset, top_winner"""
 
 # %%
 
@@ -399,68 +475,3 @@ def align_features_with_target(df):
         columns={f'p2_{col}': f'loser_{col}' for col in player_dependent_feature_columns}, inplace=True)
 
     return df
-
-
-# %%
-"""
-# at a later point, i want to pass these 2 players from the streamlit app user selection
-df_concat_subset, top_winner = get_player_match_subset(
-    'Roger Federer', 'Novak Djokovic')
-
-# %%
-# if more than 20 matches, get yearly summary
-if len(df_concat_subset) >= 20:
-    df_concat_subset_grouped_by_year = get_win_rate_by_year(
-        df_concat_subset, 'Roger Federer', 'Novak Djokovic', top_winner)
-
-
-# %%
-# get match charting master file
-
-df_match_charting_master = get_match_charting_master_data(
-    player1='Roger Federer', player2='Novak Djokovic')
-
-# %%
-df_charting_rally_stats = get_rally_stats_data()
-# %%
-df_match_charting_overview_stats = get_match_charting_overview_stats_data()
-# %%
-# Process the match charting overview stats data
-df_match_charting_overview_stats_processed, df_match_charting_overview_stats_processed_pivot = process_match_charting_overview_stats(
-    df_match_charting_overview_stats)
-# %%
-# merge some useful columns like winner_name, score etc from the atp_summary data with the match charting master data
-df_match_charting_master_merged_with_atp_match_summary = merge_atp_match_summary_and_match_charting_master_data(
-    df_match_charting_master, df_concat_subset)
-
-# %%
-# merge the match charting master data with the processed match charting overview stats data with the feature columns. Note here, the features
-# purely based on p1, p2 ie who served first in the match, not based on who won the match. This is not useful yet for training. We need to
-# perform feature alignment based on who won the match and then create the final feature columns
-df_merged_features_jumbled = merge_match_charting_feature_master_data(
-    df_match_charting_master_merged_with_atp_match_summary, df_match_charting_overview_stats_processed_pivot)
-
-# %%
-# Apply the function to create additional features
-df_merged_features_jumbled_additional_features = create_additional_features(
-    df_merged_features_jumbled.copy())
-
-# %%
-# Apply the function to align features with the target variable
-df_merged_features_aligned = align_features_with_target(
-    df_merged_features_jumbled_additional_features.copy())
-
-# %%
-# get final dataframe just with feature and target columns for training - just subset of required columns
-df_final_for_training = df_merged_features_aligned[[
-    'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
-    'winner_aces_perc', 'winner_dfs_perc', 'winner_first_in_perc', 'winner_first_won_perc', 'winner_second_won_perc',
-    'winner_bp_saved_perc', 'winner_return_pts_won_perc', 'winner_winners_unforced_perc', 'winner_winner_fh_perc',
-    'winner_winners_bh_perc', 'winner_unforced_fh_perc', 'winner_unforced_bh_perc',
-    'loser_aces_perc', 'loser_dfs_perc', 'loser_first_in_perc', 'loser_first_won_perc', 'loser_second_won_perc',
-    'loser_bp_saved_perc', 'loser_return_pts_won_perc', 'loser_winners_unforced_perc', 'loser_winner_fh_perc',
-    'loser_winners_bh_perc', 'loser_unforced_fh_perc', 'loser_unforced_bh_perc', 'target_player1_wins'
-]]
-
-# %%
-"""
