@@ -37,11 +37,16 @@ st.write(
     "that can help us understand the dynamics of this matchup better"
 )
 
+players = ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic', 'Andy Murray']
+# Default selections for players
+default_player1 = 'Roger Federer'
+default_player2 = 'Novak Djokovic'
 # Dropdown menus for selecting players
-player1 = st.selectbox('Select Player 1', [
-                       'Roger Federer', 'Novak Djokovic', 'Rafael Nadal'])
-player2 = st.selectbox('Select Player 2', [
-                       'Roger Federer', 'Novak Djokovic', 'Rafael Nadal'])
+# Dropdown menus for selecting players with default selections
+player1 = st.selectbox('Select Player 1', players,
+                       index=players.index(default_player1))
+player2 = st.selectbox('Select Player 2', players,
+                       index=players.index(default_player2))
 
 # Ensure that Player 1 and Player 2 are not the same
 if player1 == player2:
@@ -60,7 +65,7 @@ else:
 
         # Display the number of matches and the top winner
         st.write(
-            f"Found {num_matches} matches between {player1} and {player2}. {top_winner} leads the H2H record.")
+            f"Found {num_matches} matches between {player1} and {player2}")
         # Get the H2H record of the top winner
         h2h_record = df_concat_subset['winner_name'].value_counts()
         top_winner_wins = h2h_record.get(top_winner, 0)
@@ -72,7 +77,10 @@ else:
             f"{top_winner} leads the H2H record {top_winner_wins}-{top_loser_wins}")
 
         # display the atp match summary data
-        st.write(df_concat_subset)
+        df_concat_subset = df_concat_subset.reset_index(drop=True)
+        df_concat_subset.index += 1
+        st.write(df_concat_subset[['year', 'tourney_name', 'round', 'winner_name', 'loser_name',
+                                   'score', 'winner_rank', 'loser_rank']])
 
         # If more than 20 matches, get yearly summary
         if len(df_concat_subset) >= 20:
@@ -142,8 +150,5 @@ else:
         return df_concat_subset, df_final_for_training
 
     df_concat_subset, df_final_for_training = load_data(player1, player2)
-
-    # Display the final dataframe
-    st.write(df_final_for_training)
 
     # %%
