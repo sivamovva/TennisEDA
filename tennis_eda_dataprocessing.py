@@ -153,12 +153,12 @@ def get_match_charting_master_data(player1, player2):
 # get the rally stats file and do some preprocessing on it
 
 
-def get_rally_stats_data():
+def get_rally_stats_data(player1, player2):
     dfs = []
 
     # this file has some trailing commas which is causing the read_csv function to fail, so
     # adding columns_to_read explicitly
-    columns_to_read = ['match_id', 'row', 'pts', 'pl1_won', 'pl1_winners',
+    columns_to_read = ['match_id', 'server', 'returner', 'row', 'pts', 'pl1_won', 'pl1_winners',
                        'pl1_forced', 'pl1_unforced', 'pl2_won', 'pl2_winners',
                        'pl2_forced', 'pl2_unforced']
 
@@ -175,6 +175,11 @@ def get_rally_stats_data():
     df_concat = pd.DataFrame()
     for i in range(len(dfs)):
         df_concat = pd.concat([df_concat, dfs[i]])
+
+    # Keep only rows where 'server' or 'returner' column is either player1 or player2
+    player_list = [player1, player2]
+    df_concat = df_concat.query(
+        'server in @player_list or returner in @player_list')
 
     # Keep only rows where 'row' column is equal to 'Total'
     df_concat = df_concat[df_concat['row'] == 'Total']
@@ -288,7 +293,7 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     df['dfs_perc'] = df['dfs_perc'].round(2)
 
     # drop duplicates before pivoting. Some times same match_id player combinations have multiple rows
-    df = df.drop_duplicates()
+    df = df.drop_duplicates(subset=['match_id', 'player'])
 
     # pivot data such that there are separate columns for player1 and player2
     df_pivot = df.pivot(index='match_id', columns='player', values=['serve_pts', 'aces', 'dfs', 'first_in',
@@ -306,6 +311,18 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     df_pivot.reset_index(inplace=True)
 
     return df, df_pivot
+
+# %%
+# Set the 'player_serve_order' column
+
+
+def set_serve_order(row):
+    if row['player'] == row['Player 1']:
+        return 1
+    elif row['player'] == row['Player 2']:
+        return 2
+    else:
+        return None
 
 # %%
 # function to merge the match charting master data (that has only subset of the matches of the 2 players) with the processed
@@ -393,6 +410,7 @@ def align_features_with_target(df):
 
 
 # %%
+"""
 # at a later point, i want to pass these 2 players from the streamlit app user selection
 df_concat_subset, top_winner = get_player_match_subset(
     'Roger Federer', 'Novak Djokovic')
@@ -453,3 +471,4 @@ df_final_for_training = df_merged_features_aligned[[
 ]]
 
 # %%
+"""
