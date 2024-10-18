@@ -20,7 +20,7 @@ from tennis_eda_dataprocessing import (
     merge_match_charting_feature_master_data,
     create_additional_features,
     align_features_with_target,
-    set_serve_order
+
 )
 
 
@@ -75,6 +75,15 @@ else:
         # the matches between player 1 and player 2 of interest as the df_match_charting_master is just between the 2 players of interest
         df_match_charting_overview_stats = pd.merge(
             df_match_charting_overview_stats, df_match_charting_master[['match_id', 'Player 1', 'Player 2']], on='match_id')
+
+        # Set the 'player_serve_order' column
+        def set_serve_order(row):
+            if row['player'] == row['Player 1']:
+                return 1
+            elif row['player'] == row['Player 2']:
+                return 2
+            else:
+                return None
 
         # Set the serve order based on the player names
         df_match_charting_overview_stats['player_serve_order'] = df_match_charting_overview_stats.apply(

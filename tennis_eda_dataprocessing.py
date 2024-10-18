@@ -250,7 +250,8 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     df = df_match_charting_overview_stats.copy()
 
     # under player column, instead of 1 and 2, make it p1 and p2 for easier understanding of column names when the data is pivoted later
-    df['player'] = df['player'].replace({1: 'p1', 2: 'p2'})
+    df['player_serve_order'] = df['player_serve_order'].replace(
+        {1: 'p1', 2: 'p2'})
 
     df['aces_perc'] = (df['aces'] * 100 / df['serve_pts'])
     df['dfs_perc'] = (df['dfs'] * 100 / df['serve_pts'])
@@ -293,16 +294,16 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     df['dfs_perc'] = df['dfs_perc'].round(2)
 
     # drop duplicates before pivoting. Some times same match_id player combinations have multiple rows
-    df = df.drop_duplicates(subset=['match_id', 'player'])
+    df = df.drop_duplicates(subset=['match_id', 'player_serve_order'])
 
     # pivot data such that there are separate columns for player1 and player2
-    df_pivot = df.pivot(index='match_id', columns='player', values=['serve_pts', 'aces', 'dfs', 'first_in',
-                                                                    'first_won', 'second_in', 'second_won', 'bk_pts', 'bp_saved',
-                                                                    'return_pts', 'return_pts_won', 'winners', 'winners_fh', 'winners_bh',
-                                                                    'unforced', 'unforced_fh', 'unforced_bh', 'aces_perc', 'dfs_perc',
-                                                                    'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
-                                                                    'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc',
-                                                                    'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'])
+    df_pivot = df.pivot(index='match_id', columns='player_serve_order', values=['serve_pts', 'aces', 'dfs', 'first_in',
+                                                                                'first_won', 'second_in', 'second_won', 'bk_pts', 'bp_saved',
+                                                                                'return_pts', 'return_pts_won', 'winners', 'winners_fh', 'winners_bh',
+                                                                                'unforced', 'unforced_fh', 'unforced_bh', 'aces_perc', 'dfs_perc',
+                                                                                'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+                                                                                'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc',
+                                                                                'winners_bh_perc', 'unforced_fh_perc', 'unforced_bh_perc'])
 
     # Flatten the multi-index columns
     df_pivot.columns = [f'{col[1]}_{col[0]}' for col in df_pivot.columns]
@@ -313,16 +314,7 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     return df, df_pivot
 
 # %%
-# Set the 'player_serve_order' column
 
-
-def set_serve_order(row):
-    if row['player'] == row['Player 1']:
-        return 1
-    elif row['player'] == row['Player 2']:
-        return 2
-    else:
-        return None
 
 # %%
 # function to merge the match charting master data (that has only subset of the matches of the 2 players) with the processed
