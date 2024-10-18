@@ -82,7 +82,7 @@ concatenate_and_save_match_summaries()
 # Read the concatenated master file from the repo
 def get_player_match_subset(player1, player2):
 
-    master_file_url = 'https://raw.githubusercontent.com/your_username/your_repo/master/atp_matches_master.parquet'
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
 

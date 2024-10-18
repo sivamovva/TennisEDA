@@ -70,6 +70,10 @@ else:
         # Display the H2H record
         st.write(
             f"{top_winner} leads the H2H record {top_winner_wins}-{top_loser_wins}")
+
+        # display the atp match summary data
+        st.write(df_concat_subset)
+
         # If more than 20 matches, get yearly summary
         if len(df_concat_subset) >= 20:
             df_concat_subset_grouped_by_year = get_win_rate_by_year(
