@@ -181,16 +181,13 @@ else:
 
         y = df_final_for_training[f'target_{player1}_win']
 
-        model, feature_importances = get_feature_importance_random_forest(X, y)
+        model, feature_importance_df = get_feature_importance_random_forest(
+            X, y)
 
-        if feature_importances is not None and len(feature_importances) > 0:
-            feature_importances_series = pd.Series(
-                feature_importances, index=X.columns)
-            feature_importances_series = feature_importances_series.sort_values(
-                ascending=True)
-            fig = px.bar(feature_importances_series, orientation='h',
-                         title='Feature Importances')
-            st.plotly_chart(fig)
-        else:
-            st.error(
-                "Feature importances could not be calculated. Please check the input data and model.")
+        top_features = feature_importance_df.head(5)
+        top_features = top_features.sort_values(
+            by='Importance', ascending=False)
+        top_features = top_features.iloc[::-1]
+        fig = px.bar(top_features, x='Importance', y='Feature',
+                     orientation='h', title='Top 5 Feature Importances')
+        st.plotly_chart(fig)
