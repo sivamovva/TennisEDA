@@ -108,17 +108,24 @@ def load_data(player1, player2):
 
     # Apply the function to align features with the target variable
     df_merged_features_aligned = align_features_with_target(
-        df_merged_features_jumbled_additional_features.copy())
+        df_merged_features_jumbled_additional_features.copy(), player1, player2)
+
+    # if any of the rows have winner_name as NaN, drop them. This happens in some corner cases like Davis Cup, Olympics when the tournament name and
+    # hence the custom_match_id column is not the same between the atp summary data and the match charting master data. For eg, in one file, tournament
+    # name is 'Olympics' while in the other it is 'London Olympics'. Dropping these rows is a shame as
+    # rest of the data is present. But for now, I am just dropping these rows. Dont want to spend time to create a work around.
+    df_merged_features_aligned = df_merged_features_aligned.dropna(subset=[
+                                                                   'winner_name'])
 
     # Get final dataframe just with feature and target columns for training
     df_final_for_training = df_merged_features_aligned[[
-        'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
+        'match_id', 'custom_match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
         'winner_aces_perc', 'winner_dfs_perc', 'winner_first_in_perc', 'winner_first_won_perc', 'winner_second_won_perc',
         'winner_bp_saved_perc', 'winner_return_pts_won_perc', 'winner_winners_unforced_perc', 'winner_winner_fh_perc',
         'winner_winners_bh_perc', 'winner_unforced_fh_perc', 'winner_unforced_bh_perc',
         'loser_aces_perc', 'loser_dfs_perc', 'loser_first_in_perc', 'loser_first_won_perc', 'loser_second_won_perc',
         'loser_bp_saved_perc', 'loser_return_pts_won_perc', 'loser_winners_unforced_perc', 'loser_winner_fh_perc',
-        'loser_winners_bh_perc', 'loser_unforced_fh_perc', 'loser_unforced_bh_perc'
+        'loser_winners_bh_perc', 'loser_unforced_fh_perc', 'loser_unforced_bh_perc', f'target_{player1}_win', f'target_{player2}_win'
     ]]
 
     return df_concat_subset, df_final_for_training

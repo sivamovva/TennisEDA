@@ -439,7 +439,7 @@ def create_additional_features(df):
 # %%
 
 
-def align_features_with_target(df):
+def align_features_with_target(df, player1, player2):
 
     # List of feature columns to swap between Player 1 and Player 2
     player_dependent_feature_columns = [
@@ -464,9 +464,12 @@ def align_features_with_target(df):
                 df.at[index, p1_col], df.at[index,
                                             p2_col] = row[p2_col], row[p1_col]
 
-    # Create a target variable: 1 if Player 1 wins, 0 if Player 2 wins
-    df['target_player1_wins'] = (
-        df['winner_name'] == df['Player 1']).astype(int)
+    # Create target variable columns - 1 for each player so that model can learn feature importance from
+    # both players perspective
+    df[f'target_{player1}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == player1 else 0)
+    df[f'target_{player2}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == player2 else 0)
 
     # Rename p1_ and p2_ prefixes to winner_ and loser_
     df.rename(
