@@ -1,36 +1,25 @@
 match_id,Player 1,Player 2,Pl 1 hand,Pl 2 hand,Date,Tournament,Round,Time,Court,Surface,Umpire,Best of,Final TB?,Charted by,year,custom_match_id
-20190712-M-Wimbledon-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20190712,Wimbledon,SF,16:40,Centre,Grass,James Keothavong,5,T,Zindaras,2019,2019_Wimbledon_SF_Rafael Nadal_Roger Federer
-20190607-M-Roland_Garros-SF-Rafael_Nadal-Roger_Federer,Rafael Nadal,Roger Federer,L,R,20190607,Roland Garros,SF,13:05,Centre,Clay,,5,0,Zindaras,2019,2019_Roland Garros_SF_Rafael Nadal_Roger Federer
-20171015-M-Shanghai_Masters-F-Rafael_Nadal-Roger_Federer,Rafael Nadal,Roger Federer,L,R,20171015,Shanghai Masters,F,17:45,Stadium,Hard,Cedric Mourier,3,1,Edo,2017,2017_Shanghai Masters_F_Rafael Nadal_Roger Federer
-20151101-M-Basel-F-Rafael_Nadal-Roger_Federer,Rafael Nadal,Roger Federer,L,R,20151101,Basel,F,,,Hard,Mohamed Lahyani,3,1,Isaac,2015,2015_Basel_F_Rafael Nadal_Roger Federer
-20130816-M-Cincinnati_Masters-QF-Rafael_Nadal-Roger_Federer,Rafael Nadal,Roger Federer,L,R,20130816,Cincinnati Masters,QF,6:00:00 PM,Stadium,Hard,Carlos Bernardes,3,1,Edo,2013,2013_Cincinnati Masters_QF_Rafael Nadal_Roger Federer
-20130519-M-Rome_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20130519,Rome Masters,F,,Campo Centrale,Clay,Carlos Bernardes,3,1,Isaac,2013,2013_Rome Masters_F_Rafael Nadal_Roger Federer
-20130315-M-Indian_Wells_Masters-QF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20130315,Indian Wells Masters,QF,20:15,Stadium 1,Hard,Mohamed Lahyani,3,1,Edo,2013,2013_Indian Wells Masters_QF_Rafael Nadal_Roger Federer
-20120316-M-Indian_Wells_Masters-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20120316,Indian Wells Masters,SF,12:17,Centre Court,Hard,Steve Ullrich,3,1,Sagar Manohar,2012,2012_Indian Wells Masters_SF_Rafael Nadal_Roger Federer
-20120127-M-Australian_Open-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20120127,Australian Open,SF,,Rod laver Arena,Hard,,5,0,Isaac,2012,2012_Australian Open_SF_Rafael Nadal_Roger Federer
-20111122-M-Tour_Finals-RR-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20111122,Tour Finals,RR,,,Hard,Steve Ullrich,3,1,Amy,2011,2011_Tour Finals_RR_Rafael Nadal_Roger Federer
-20110605-M-Roland_Garros-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20110605,Roland Garros,F,15:15,Philippe Chatrier,Clay,Pascal Maria,5,0,Edo,2011,2011_Roland Garros_F_Rafael Nadal_Roger Federer
-20110507-M-Madrid_Masters-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20110507,Madrid Masters,SF,16:15,Manolo Santana,Clay,Mohamed Lahyani,3,1,Edo,2011,2011_Madrid Masters_SF_Rafael Nadal_Roger Federer
-20110401-M-Miami_Masters-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20110401,Miami Masters,SF,,Stadium,Hard,Steve Ullrich,3,1,Isaac,2011,2011_Miami Masters_SF_Rafael Nadal_Roger Federer
-20101128-M-Tour_Finals-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20101128,Tour Finals,F,18:45,Centre,Hard,Mohamed Lahyani,3,1,Edo,2010,2010_Tour Finals_F_Rafael Nadal_Roger Federer
-20100509-M-Madrid_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20100509,Madrid Masters,F,,Manolo Santana,Clay,,3,1,Isaac,2010,2010_Madrid Masters_F_Rafael Nadal_Roger Federer
-20090517-M-Madrid_Masters-F-Rafael_Nadal-Roger_Federer,Rafael Nadal,Roger Federer,L,R,20090517,Madrid Masters,F,16:20,Manolo Santana,Clay,Lars Graff,3,1,Edo,2009,2009_Madrid Masters_F_Rafael Nadal_Roger Federer
-20090201-M-Australian_Open-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20090201,Australian Open,F,8:30 PM,Centre,Hard,Pascal Maria,5,0,Edo,2009,2009_Australian Open_F_Rafael Nadal_Roger Federer
-20080706-M-Wimbledon-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20080706,Wimbledon,F,14:35,Centre,Grass,Pascal Maria,5,0,Palaver,2008,2008_Wimbledon_F_Rafael Nadal_Roger Federer
-20080608-M-Roland_Garros-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20080608,Roland Garros,F,15:15,Philippe Chatrier,Clay,Carlos Ramos,5,0,Edo,2008,2008_Roland Garros_F_Rafael Nadal_Roger Federer
-20080511-M-Hamburg_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20080511,Hamburg Masters,F,15:00,Centre,Clay,Fergus Murphy,3,1,Edo,2008,2008_Hamburg Masters_F_Rafael Nadal_Roger Federer
-20080420-M-Monte_Carlo_Masters-F-Rafael_Nadal-Roger_Federer,Rafael Nadal,Roger Federer,L,R,20080420,Monte Carlo Masters,F,2:00:00 PM,Central,Clay,Lars Graff,3,1,Edo,2008,2008_Monte Carlo Masters_F_Rafael Nadal_Roger Federer
-20071112-M-Masters_Cup-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20071112,Masters Cup,SF,,Centre,Hard,,3,1,Isaac,2007,2007_Masters Cup_SF_Rafael Nadal_Roger Federer
-20070708-M-Wimbledon-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20070708,Wimbledon,F,14:15,Centre,Grass,Carlos Ramos,5,0,Palaver,2007,2007_Wimbledon_F_Rafael Nadal_Roger Federer
-20070610-M-Roland_Garros-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20070610,Roland Garros,F,,Philippe Chatrier,Clay,Sandra de Jenken,5,0,Palaver,2007,2007_Roland Garros_F_Rafael Nadal_Roger Federer
-20070520-M-Hamburg_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20070520,Hamburg Masters,F,15:00,,Clay,Cedric Mourier,3,1,Edo,2007,2007_Hamburg Masters_F_Rafael Nadal_Roger Federer
-20070415-M-Monte_Carlo_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20070415,Monte Carlo Masters,F,2:00:00 PM,Central,Clay,Carlos Bernardes,3,1,Edo,2007,2007_Monte Carlo Masters_F_Rafael Nadal_Roger Federer
-20061113-M-Masters_Cup-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20061113,Masters Cup,SF,,Center,Hard,Mohamed Lahyani,3,1,Isaac,2006,2006_Masters Cup_SF_Rafael Nadal_Roger Federer
-20060709-M-Wimbledon-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20060709,Wimbledon,F,14:10,Centre,Grass,,5,0,Palaver,2006,2006_Wimbledon_F_Rafael Nadal_Roger Federer
-20060611-M-Roland_Garros-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20060611,Roland Garros,F,15:15,Philippe Chatrier,Clay,,5,0,Edo,2006,2006_Roland Garros_F_Rafael Nadal_Roger Federer
-20060514-M-Rome_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20060514,Rome Masters,F,,Centrale,Clay,Romano Grillotti,5,1,Salvo,2006,2006_Rome Masters_F_Rafael Nadal_Roger Federer
-20060423-M-Monte_Carlo_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20060423,Monte Carlo Masters,F,14:40,Central,Clay,Gerry Armstrong,5,1,Edo,2006,2006_Monte Carlo Masters_F_Rafael Nadal_Roger Federer
-20060305-M-Dubai-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20060305,Dubai,F,,,Hard,,3,1,Isaac,2006,2006_Dubai_F_Rafael Nadal_Roger Federer
-20050601-M-Roland_Garros-SF-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20050601,Roland Garros,SF,,,Clay,,5,0,Isaac,2005,2005_Roland Garros_SF_Rafael Nadal_Roger Federer
-20050403-M-Miami_Masters-F-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20050403,Miami Masters,F,12:00,Centre,Hard,Steve Ullrich,5,1,Edo,2005,2005_Miami Masters_F_Rafael Nadal_Roger Federer
-20040328-M-Miami_Masters-R32-Roger_Federer-Rafael_Nadal,Roger Federer,Rafael Nadal,R,L,20040328,Miami Masters,R32,,,Hard,,3,1,Isaac,2004,2004_Miami Masters_R32_Rafael Nadal_Roger Federer
+20150822-M-Cincinnati_Masters-SF-Andy_Murray-Roger_Federer,Andy Murray,Roger Federer,R,R,20150822,Cincinnati Masters,SF,,Center,Hard,Fergus Murphy,3,1,FedFan,2015,2015_Cincinnati Masters_SF_Andy Murray_Roger Federer
+20150710-M-Wimbledon-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20150710,Wimbledon,SF,16:15,Centre,Grass,Mohamed Lahyani,5,0,Edo,2015,2015_Wimbledon_SF_Andy Murray_Roger Federer
+20140815-M-Cincinnati_Masters-QF-Andy_Murray-Roger_Federer,Andy Murray,Roger Federer,R,R,20140815,Cincinnati Masters,QF,7pm,Center,Hard,Mohamed Lahyani,3,1,Edo,2014,2014_Cincinnati Masters_QF_Andy Murray_Roger Federer
+20140122-M-Australian_Open-QF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20140122,Australian Open,QF,,Rod Laver Arena,Hard,,5,1,Isaac,2014,2014_Australian Open_QF_Andy Murray_Roger Federer
+20130125-M-Australian_Open-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20130125,Australian Open,SF,,Rod Laver Arena,Hard,,5,0,Isaac,2013,2013_Australian Open_SF_Andy Murray_Roger Federer
+20121111-M-Tour_Finals-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20121111,Tour Finals,SF,,,Hard,,3,1,Isaac,2012,2012_Tour Finals_SF_Andy Murray_Roger Federer
+20121012-M-Shanghai_Masters-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20121012,Shanghai Masters,SF,,,Hard,,3,1,Isaac,2012,2012_Shanghai Masters_SF_Andy Murray_Roger Federer
+20120804-M-Olympics-F-Andy_Murray-Roger_Federer,Andy Murray,Roger Federer,R,R,20120804,Olympics,F,,,Grass,,3,1,Isaac,2012,2012_Olympics_F_Andy Murray_Roger Federer
+20120708-M-Wimbledon-F-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20120708,Wimbledon,F,14:10,Centre,Grass,Enric Molina,5,0,Paul,2012,2012_Wimbledon_F_Andy Murray_Roger Federer
+20120303-M-Dubai-F-Andy_Murray-Roger_Federer,Andy Murray,Roger Federer,R,R,20120303,Dubai,F,20:10,Centre,Hard,Mohamed Lahyani,3,1,Chris Devine,2012,2012_Dubai_F_Andy Murray_Roger Federer
+20101121-M-Tour_Finals-RR-Andy_Murray-Roger_Federer,Andy Murray,Roger Federer,R,R,20101121,Tour Finals,RR,,Centre Court,Hard,,3,1,Isaac,2010,2010_Tour Finals_RR_Andy Murray_Roger Federer
+20101017-M-Shanghai_Masters-F-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20101017,Shanghai Masters,F,17:40,Centre,Hard,Cedric Mourier,3,1,Edo,2010,2010_Shanghai Masters_F_Andy Murray_Roger Federer
+20100815-M-Canada_Masters-F-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20100815,Canada Masters,F,13:55,Toronto,Hard,Lars Graff,3,1,Edo,2010,2010_Canada Masters_F_Andy Murray_Roger Federer
+20100131-M-Australian_Open-F-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20100131,Australian Open,F,,Rod Laver,Hard,,5,0,Edged,2010,2010_Australian Open_F_Andy Murray_Roger Federer
+20091122-M-Tour_Finals-RR-Andy_Murray-Roger_Federer,Andy Murray,Roger Federer,R,R,20091122,Tour Finals,RR,,Centre Court,Hard,,3,1,Isaac,2009,2009_Tour Finals_RR_Andy Murray_Roger Federer
+20090823-M-Cincinnati_Masters-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20090823,Cincinnati Masters,SF,,,Hard,,3,1,DanF,2009,2009_Cincinnati Masters_SF_Andy Murray_Roger Federer
+20090321-M-Indian_Wells_Masters-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20090321,Indian Wells Masters,SF,2pm,Stadium 1,Hard,Steve Ulrich,3,1,Edo,2009,2009_Indian Wells Masters_SF_Andy Murray_Roger Federer
+20090109-M-Doha-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20090109,Doha,SF,19:30,Centre,Hard,,3,1,Edo,2009,2009_Doha_SF_Andy Murray_Roger Federer
+20081114-M-Masters_Cup-RR-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20081114,Masters Cup,RR,20:00,Centre,Hard,Cedric Mourier,3,1,Edo,2008,2008_Masters Cup_RR_Andy Murray_Roger Federer
+20081018-M-Madrid_Masters-SF-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20081018,Madrid Masters,SF,14:40,Pista Central,Hard,Damian Steiner,3,1,Edo,2008,2008_Madrid Masters_SF_Andy Murray_Roger Federer
+20080908-M-US_Open-F-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20080908,US Open,F,5:00 PM,Ashe,Hard,Carlos Bernardes,5,1,Edo,2008,2008_US Open_F_Andy Murray_Roger Federer
+20080304-M-Dubai-R32-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20080304,Dubai,R32,7:00:00 PM,Centre,Hard,Mohamed Lahyani,3,1,Edo,2008,2008_Dubai_R32_Andy Murray_Roger Federer
+20060816-M-Cincinnati_Masters-R32-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20060816,Cincinnati Masters,R32,14:30,Centre,Hard,Carlos Bernardes,3,1,Edo,2006,2006_Cincinnati Masters_R32_Andy Murray_Roger Federer
+20051002-M-Bangkok-F-Roger_Federer-Andy_Murray,Roger Federer,Andy Murray,R,R,20051002,Bangkok,F,,Centre,Hard,Lars Graff,3,1,Edo,2005,2005_Bangkok_F_Andy Murray_Roger Federer

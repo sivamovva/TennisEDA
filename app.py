@@ -28,6 +28,7 @@ from tennis_eda_dataprocessing import (
 
 
 @st.cache_data  # this is a decorator that will cache the data for the session
+# %%
 def load_data(player1, player2):
     # this takes the most time. figure out ow to cache this
     df_concat_subset, top_winner = get_player_match_subset(
@@ -141,11 +142,14 @@ players = ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic', 'Andy Murray']
 default_player1 = 'Roger Federer'
 default_player2 = 'Novak Djokovic'
 # Dropdown menus for selecting players
-# Dropdown menus for selecting players with default selections
-player1 = st.selectbox('Select Player 1', players,
-                       index=players.index(default_player1))
-player2 = st.selectbox('Select Player 2', players,
-                       index=players.index(default_player2))
+col1, col2 = st.columns(2)
+with col1:
+    # Dropdown menus for selecting players with default selections
+    player1 = st.selectbox('Select Player 1', players,
+                           index=players.index(default_player1))
+with col2:
+    player2 = st.selectbox('Select Player 2', players,
+                           index=players.index(default_player2))
 
 # Ensure that Player 1 and Player 2 are not the same
 if player1 == player2:
@@ -153,5 +157,5 @@ if player1 == player2:
         "Player 1 and Player 2 cannot be the same. Please select different players.")
 else:
     df_concat_subset, df_final_for_training = load_data(player1, player2)
-
-    # %%
+    st.write(f'found {len(df_final_for_training)} matches with data charted')
+    st.write(df_final_for_training)
