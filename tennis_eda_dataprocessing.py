@@ -5,6 +5,12 @@ import pandas as pd
 from io import StringIO
 import numpy as np
 import re
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+import seaborn as sns
+import streamlit as st
 # %%
 # Replace with your GitHub repository details
 data_source_user = 'JeffSackmann'
@@ -112,54 +118,6 @@ def get_player_match_subset(player1, player2):
         f'selected_players_atp_matches_summary.csv', index=False)
 
     return df_concat_subset, top_winner
-
-
-"""
-def get_player_match_subset(player1, player2):
-    dfs = []
-
-    for csv_file in csv_files_match_summary:
-        url = csv_base_url_match_summary + csv_file
-        response = requests.get(url)
-        if response.status_code == 200:
-            csv_data = StringIO(response.text)
-            df = pd.read_csv(csv_data, on_bad_lines='skip')
-            dfs.append(df)
-        else:
-            print(f"Failed to fetch {csv_file}")
-
-    # concatenate all data into 1 file and then just take the subset of the 50 odd matches
-    # that fed and novak played against each other
-    df_concat = pd.DataFrame()
-    for i in range(len(dfs)):
-        df_concat = pd.concat([df_concat, dfs[i]])
-
-    # getting just the subset of matches where the specified players played against each other
-    player_list = [player1, player2]
-    df_concat_subset = df_concat.query(
-        'winner_name in @player_list and loser_name in @player_list')
-
-    # Determine the player with the higher win count
-    winner_counts = df_concat_subset['winner_name'].value_counts()
-    top_winner = winner_counts.idxmax()
-
-    # Create a binary column for the top winner
-    df_concat_subset[f'{top_winner}_wins'] = (
-        df_concat_subset['winner_name'] == top_winner).astype(int)
-
-    # create a year column from the tourney_date column
-    df_concat_subset['year'] = df_concat_subset['tourney_date'].astype(
-        'str').str[:4]
-
-    # create unique match id column: concatenate year, tournament name, winner name and loser name (sorted alphabetically)
-    df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['tourney_name'] + '_' + \
-        df_concat_subset['round'] + '_' + df_concat_subset[['winner_name', 'loser_name']].apply(
-            lambda x: '_'.join(sorted(x)), axis=1)
-
-    df_concat_subset.to_csv(
-        f'selected_players_atp_matches_summary.csv', index=False)
-
-    return df_concat_subset, top_winner"""
 
 # %%
 
@@ -478,3 +436,62 @@ def align_features_with_target(df, player1, player2):
         columns={f'p2_{col}': f'loser_{col}' for col in player_dependent_feature_columns}, inplace=True)
 
     return df
+
+# %%
+
+
+def display_metrics_in_streamlit(precision, recall, f1, accuracy, target_column):
+    st.write(f"Logistic Regression Metrics for {target_column}:")
+    st.write(f"Precision: {precision}")
+    st.write(f"Recall: {recall}")
+    st.write(f"F1 Score: {f1}")
+    st.write(f"Accuracy: {accuracy}")
+
+
+def fit_logistic_regression(df, target_column):
+    X = df.drop(columns=[target_column])
+    y = df[target_column]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42)
+
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    accuracy = accuracy_score(y_test, y_pred)
+
+    display_metrics_in_streamlit(
+        precision, recall, f1, accuracy, target_column)
+
+    return model
+
+
+# %%
+
+
+def get_feature_importance_random_forest(X, y):
+
+    # specifying the correct feature (X) and target (y) columns is done in app.py before the function call.
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42)
+
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    feature_importances = model.feature_importances_
+    feature_names = X.columns
+
+    feature_importance_df = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': feature_importances
+    }).sort_values(by='Importance', ascending=False)
+
+    return model, feature_importance_df
+
+# %%

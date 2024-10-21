@@ -20,6 +20,8 @@ from tennis_eda_dataprocessing import (
     merge_match_charting_feature_master_data,
     create_additional_features,
     align_features_with_target,
+    get_feature_importance_random_forest
+
 
 )
 
@@ -119,7 +121,7 @@ def load_data(player1, player2):
 
     # Get final dataframe just with feature and target columns for training
     df_final_for_training = df_merged_features_aligned[[
-        'match_id', 'custom_match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
+        'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
         'winner_aces_perc', 'winner_dfs_perc', 'winner_first_in_perc', 'winner_first_won_perc', 'winner_second_won_perc',
         'winner_bp_saved_perc', 'winner_return_pts_won_perc', 'winner_winners_unforced_perc', 'winner_winner_fh_perc',
         'winner_winners_bh_perc', 'winner_unforced_fh_perc', 'winner_unforced_bh_perc',
@@ -166,3 +168,29 @@ else:
     df_concat_subset, df_final_for_training = load_data(player1, player2)
     st.write(f'found {len(df_final_for_training)} matches with data charted')
     st.write(df_final_for_training)
+
+    # Create tabs for different sections
+    tab1, tab2 = st.tabs(
+        [f'Feature importance for {player1} to win over {player2}', 'Logistic Regression Classifier'])
+
+    with tab1:
+        st.header(f'Feature importance for {player1} to win over {player2}')
+
+        X = df_final_for_training.drop(
+            columns=[f'target_{player1}_win', f'target_{player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
+
+        y = df_final_for_training[f'target_{player1}_win']
+
+        model, feature_importances = get_feature_importance_random_forest(X, y)
+
+        if feature_importances is not None and len(feature_importances) > 0:
+            feature_importances_series = pd.Series(
+                feature_importances, index=X.columns)
+            feature_importances_series = feature_importances_series.sort_values(
+                ascending=True)
+            fig = px.bar(feature_importances_series, orientation='h',
+                         title='Feature Importances')
+            st.plotly_chart(fig)
+        else:
+            st.error(
+                "Feature importances could not be calculated. Please check the input data and model.")
