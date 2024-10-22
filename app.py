@@ -170,7 +170,11 @@ st.write(
     "that can help us understand the dynamics of this matchup better"
 )
 
-players = ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic', 'Andy Murray']
+players = ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic',
+           'Andy Murray', 'Pete Sampras', 'Andre Agassi', 'David Ferrer',
+           'Tomas Berdych', 'Stan Wawrinka', 'Lleyton Hewitt', 'Juan Martin del Potro', 'Andy Roddick', 'Jo-Wilfried Tsonga',
+           'Jim Courier', 'Michael Chang', 'Marat Safin', 'Goran Ivanisevic', 'Patrick Rafter', 'Yevgeny Kafelnikov',
+           'Carlos Moya', 'Richard Gasquet', 'Nikolay Davydenko', 'David Nalbandian', 'Tommy Haas', 'Fernando Gonzalez']
 # Default selections for players
 default_player1 = 'Roger Federer'
 default_player2 = 'Novak Djokovic'
@@ -189,10 +193,14 @@ if user_selected_player1 == user_selected_player2:
     st.error(
         "Player 1 and Player 2 cannot be the same. Please select different players.")
 else:
-    df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned = load_data(
-        user_selected_player1, user_selected_player2)
-    st.write(
-        f'found {len(df_final_for_training_winner_loser_feature_aligned)} matches with data charted')
+    # Check if there are any matches between the selected players
+    try:
+        df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned = load_data(
+            user_selected_player1, user_selected_player2)
+    except ValueError as e:
+        st.warning(
+            f"No matches found between {user_selected_player1} and {user_selected_player2}. Please select different players.")
+        st.stop()
 
     # Create tabs for different sections
     tab1, tab2, tab3 = st.tabs(
