@@ -128,7 +128,7 @@ def load_data(user_selected_player1, user_selected_player2):
     df_merged_features_aligned_winner_loser = df_merged_features_aligned_winner_loser.dropna(subset=[
         'winner_name'])
 
-    df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_winner_loser.dropna(subset=[
+    df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_user_selected_p1_p2.dropna(subset=[
         'winner_name'])
 
     # Get final dataframe just with feature and target columns for training
@@ -188,23 +188,24 @@ if user_selected_player1 == user_selected_player2:
     st.error(
         "Player 1 and Player 2 cannot be the same. Please select different players.")
 else:
-    df_concat_subset, df_final_for_training = load_data(
+    df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned = load_data(
         user_selected_player1, user_selected_player2)
-    st.write(f'found {len(df_final_for_training)} matches with data charted')
-    st.write(df_final_for_training)
+    st.write(
+        f'found {len(df_final_for_training_winner_loser_feature_aligned)} matches with data charted')
 
     # Create tabs for different sections
-    tab1, tab2 = st.tabs(
-        [f'{user_selected_player1} win over {user_selected_player2}', f'{user_selected_player2} win over {user_selected_player1}'])
+    tab1, tab2, tab3 = st.tabs(
+        ['Top 5 Factors that predict the winner', f'Factors specific to {user_selected_player1} win', f'Factors specific to {user_selected_player2} win'])
 
     with tab1:
         st.header(
-            f'Feature importance for {user_selected_player1} to win over {user_selected_player2}')
+            f'Feature importance for predicting generic winner')
 
-        X = df_final_for_training.drop(
+        X = df_final_for_training_winner_loser_feature_aligned.drop(
             columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
 
-        y = df_final_for_training[f'target_{user_selected_player1}_win']
+        y = df_final_for_training_winner_loser_feature_aligned[
+            f'target_{user_selected_player1}_win']
 
         model, feature_importance_df = get_feature_importance_random_forest(
             X, y)
@@ -213,26 +214,60 @@ else:
         top_features = top_features.sort_values(
             by='Importance', ascending=False)
         top_features = top_features.iloc[::-1]
-        fig1 = px.bar(top_features, x='Importance', y='Feature',
-                      orientation='h', title='Top 5 Feature Importances')
-        st.plotly_chart(fig1, key='fig1')
+        fig = px.bar(top_features, x='Importance', y='Feature',
+                     orientation='h', title='Top 5 Feature Importances')
+        st.plotly_chart(fig, key='fig')
 
     with tab2:
         st.header(
-            f'Feature importance for {user_selected_player2} to win over {user_selected_player1}')
+            f'Factors specific to {user_selected_player1} win')
 
-        X = df_final_for_training.drop(
-            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
+        X1 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
+            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win',
+                     'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
+                     f'{user_selected_player2}_aces_perc', f'{user_selected_player2}_dfs_perc', f'{user_selected_player2}_first_in_perc',
+                     f'{user_selected_player2}_first_won_perc', f'{user_selected_player2}_second_won_perc', f'{user_selected_player2}_bp_saved_perc',
+                     f'{user_selected_player2}_return_pts_won_perc', f'{user_selected_player2}_winners_unforced_perc', f'{user_selected_player2}_winner_fh_perc',
+                     f'{user_selected_player2}_winners_bh_perc', f'{user_selected_player2}_unforced_fh_perc', f'{user_selected_player2}_unforced_bh_perc'
+                     ])
 
-        y = df_final_for_training[f'target_{user_selected_player2}_win']
+        y1 = df_final_for_training_user_selected_p1p2_feature_aligned[
+            f'target_{user_selected_player1}_win']
 
-        model, feature_importance_df = get_feature_importance_random_forest(
-            X, y)
+        model1, feature_importance_df1 = get_feature_importance_random_forest(
+            X1, y1)
 
-        top_features = feature_importance_df.head(5)
-        top_features = top_features.sort_values(
+        top_features1 = feature_importance_df1.head(5)
+        top_features1 = top_features1.sort_values(
             by='Importance', ascending=False)
-        top_features = top_features.iloc[::-1]
-        fig2 = px.bar(top_features, x='Importance', y='Feature',
+        top_features1 = top_features1.iloc[::-1]
+        fig1 = px.bar(top_features1, x='Importance', y='Feature',
+                      orientation='h', title='Top 5 Feature Importances')
+        st.plotly_chart(fig1, key='fig1')
+
+    with tab3:
+        st.header(
+            f'Factors specific to {user_selected_player2} win')
+
+        X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
+            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win',
+                     'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
+                     f'{user_selected_player1}_aces_perc', f'{user_selected_player1}_dfs_perc', f'{user_selected_player1}_first_in_perc',
+                     f'{user_selected_player1}_first_won_perc', f'{user_selected_player1}_second_won_perc', f'{user_selected_player1}_bp_saved_perc',
+                     f'{user_selected_player1}_return_pts_won_perc', f'{user_selected_player1}_winners_unforced_perc', f'{user_selected_player1}_winner_fh_perc',
+                     f'{user_selected_player1}_winners_bh_perc', f'{user_selected_player1}_unforced_fh_perc', f'{user_selected_player1}_unforced_bh_perc'
+                     ])
+
+        y2 = df_final_for_training_user_selected_p1p2_feature_aligned[
+            f'target_{user_selected_player2}_win']
+
+        model2, feature_importance_df2 = get_feature_importance_random_forest(
+            X2, y2)
+
+        top_features2 = feature_importance_df2.head(5)
+        top_features2 = top_features2.sort_values(
+            by='Importance', ascending=False)
+        top_features2 = top_features2.iloc[::-1]
+        fig2 = px.bar(top_features2, x='Importance', y='Feature',
                       orientation='h', title='Top 5 Feature Importances')
         st.plotly_chart(fig2, key='fig2')
