@@ -19,7 +19,8 @@ from tennis_eda_dataprocessing import (
     merge_atp_match_summary_and_match_charting_master_data,
     merge_match_charting_feature_master_data,
     create_additional_features,
-    align_features_with_target,
+    align_features_with_winner_loser_and_create_target,
+    align_features_with_selected_players_and_create_target,
     get_feature_importance_random_forest
 
 
@@ -31,22 +32,22 @@ from tennis_eda_dataprocessing import (
 
 @st.cache_data  # this is a decorator that will cache the data for the session
 # %%
-def load_data(player1, player2):
+def load_data(user_selected_player1, user_selected_player2):
     # this takes the most time. figure out ow to cache this
     df_concat_subset, top_winner = get_player_match_subset(
-        player1, player2)
+        user_selected_player1, user_selected_player2)
 
     # Get the length of the dataframe
     num_matches = len(df_concat_subset)
 
     # Display the number of matches and the top winner
     st.write(
-        f"Found {num_matches} matches between {player1} and {player2}")
+        f"Found {num_matches} matches between {user_selected_player1} and {user_selected_player2}")
     # Get the H2H record of the top winner
     h2h_record = df_concat_subset['winner_name'].value_counts()
     top_winner_wins = h2h_record.get(top_winner, 0)
     top_loser_wins = h2h_record.get(
-        player1 if top_winner == player2 else player2, 0)
+        user_selected_player1 if top_winner == user_selected_player2 else user_selected_player2, 0)
 
     # Display the H2H record
     st.write(
@@ -61,13 +62,14 @@ def load_data(player1, player2):
     # If more than 20 matches, get yearly summary
     if len(df_concat_subset) >= 20:
         df_concat_subset_grouped_by_year = get_win_rate_by_year(
-            df_concat_subset, player1, player2, top_winner)
+            df_concat_subset, user_selected_player1, user_selected_player2, top_winner)
 
     # Get match charting master file
     df_match_charting_master = get_match_charting_master_data(
-        player1, player2)
+        user_selected_player1, user_selected_player2)
 
-    df_charting_rally_stats = get_rally_stats_data(player1, player2)
+    df_charting_rally_stats = get_rally_stats_data(
+        user_selected_player1, user_selected_player2)
     df_match_charting_overview_stats = get_match_charting_overview_stats_data()
 
     # looks like Jeff Sackman recently changed the format of the overview stats. player column went from 1/2 (serve order) to
@@ -109,28 +111,49 @@ def load_data(player1, player2):
         df_merged_features_jumbled.copy())
 
     # Apply the function to align features with the target variable
-    df_merged_features_aligned = align_features_with_target(
-        df_merged_features_jumbled_additional_features.copy(), player1, player2)
+    df_merged_features_aligned_winner_loser = align_features_with_winner_loser_and_create_target(
+        df_merged_features_jumbled_additional_features.copy(), user_selected_player1, user_selected_player2)
+
+    # now align features with user_selected_player1 and user_selected_player2 instead of winner_loser
+    # this is to explore if feature importance is different for the 2 different players. Idea is to train the model only on the subset
+    # of features related to 1 player and see what are the features of importance for that player to win over the other player
+    # and vice versa
+    df_merged_features_aligned_user_selected_p1_p2 = align_features_with_selected_players_and_create_target(
+        df_merged_features_jumbled_additional_features.copy(), user_selected_player1, user_selected_player2)
 
     # if any of the rows have winner_name as NaN, drop them. This happens in some corner cases like Davis Cup, Olympics when the tournament name and
     # hence the custom_match_id column is not the same between the atp summary data and the match charting master data. For eg, in one file, tournament
     # name is 'Olympics' while in the other it is 'London Olympics'. Dropping these rows is a shame as
     # rest of the data is present. But for now, I am just dropping these rows. Dont want to spend time to create a work around.
-    df_merged_features_aligned = df_merged_features_aligned.dropna(subset=[
-                                                                   'winner_name'])
+    df_merged_features_aligned_winner_loser = df_merged_features_aligned_winner_loser.dropna(subset=[
+        'winner_name'])
+
+    df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_winner_loser.dropna(subset=[
+        'winner_name'])
 
     # Get final dataframe just with feature and target columns for training
-    df_final_for_training = df_merged_features_aligned[[
+    df_final_for_training_winner_loser_feature_aligned = df_merged_features_aligned_winner_loser[[
         'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
         'winner_aces_perc', 'winner_dfs_perc', 'winner_first_in_perc', 'winner_first_won_perc', 'winner_second_won_perc',
         'winner_bp_saved_perc', 'winner_return_pts_won_perc', 'winner_winners_unforced_perc', 'winner_winner_fh_perc',
         'winner_winners_bh_perc', 'winner_unforced_fh_perc', 'winner_unforced_bh_perc',
         'loser_aces_perc', 'loser_dfs_perc', 'loser_first_in_perc', 'loser_first_won_perc', 'loser_second_won_perc',
         'loser_bp_saved_perc', 'loser_return_pts_won_perc', 'loser_winners_unforced_perc', 'loser_winner_fh_perc',
-        'loser_winners_bh_perc', 'loser_unforced_fh_perc', 'loser_unforced_bh_perc', f'target_{player1}_win', f'target_{player2}_win'
+        'loser_winners_bh_perc', 'loser_unforced_fh_perc', 'loser_unforced_bh_perc', f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win'
     ]]
 
-    return df_concat_subset, df_final_for_training
+    # Get final dataframe just with feature and target columns for training
+    df_final_for_training_user_selected_p1p2_feature_aligned = df_merged_features_aligned_user_selected_p1_p2[[
+        'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
+        f'{user_selected_player1}_aces_perc', f'{user_selected_player1}_dfs_perc', f'{user_selected_player1}_first_in_perc', f'{user_selected_player1}_first_won_perc', f'{user_selected_player1}_second_won_perc',
+        f'{user_selected_player1}_bp_saved_perc', f'{user_selected_player1}_return_pts_won_perc', f'{user_selected_player1}_winners_unforced_perc', f'{user_selected_player1}_winner_fh_perc',
+        f'{user_selected_player1}_winners_bh_perc', f'{user_selected_player1}_unforced_fh_perc', f'{user_selected_player1}_unforced_bh_perc',
+        f'{user_selected_player2}_aces_perc', f'{user_selected_player2}_dfs_perc', f'{user_selected_player2}_first_in_perc', f'{user_selected_player2}_first_won_perc', f'{user_selected_player2}_second_won_perc',
+        f'{user_selected_player2}_bp_saved_perc', f'{user_selected_player2}_return_pts_won_perc', f'{user_selected_player2}_winners_unforced_perc', f'{user_selected_player2}_winner_fh_perc',
+        f'{user_selected_player2}_winners_bh_perc', f'{user_selected_player2}_unforced_fh_perc', f'{user_selected_player2}_unforced_bh_perc', f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win'
+    ]]
+
+    return df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned
 
 
 # %%
@@ -154,32 +177,34 @@ default_player2 = 'Novak Djokovic'
 col1, col2 = st.columns(2)
 with col1:
     # Dropdown menus for selecting players with default selections
-    player1 = st.selectbox('Select Player 1', players,
-                           index=players.index(default_player1))
+    user_selected_player1 = st.selectbox('Select Player 1', players,
+                                         index=players.index(default_player1))
 with col2:
-    player2 = st.selectbox('Select Player 2', players,
-                           index=players.index(default_player2))
+    user_selected_player2 = st.selectbox('Select Player 2', players,
+                                         index=players.index(default_player2))
 
 # Ensure that Player 1 and Player 2 are not the same
-if player1 == player2:
+if user_selected_player1 == user_selected_player2:
     st.error(
         "Player 1 and Player 2 cannot be the same. Please select different players.")
 else:
-    df_concat_subset, df_final_for_training = load_data(player1, player2)
+    df_concat_subset, df_final_for_training = load_data(
+        user_selected_player1, user_selected_player2)
     st.write(f'found {len(df_final_for_training)} matches with data charted')
     st.write(df_final_for_training)
 
     # Create tabs for different sections
     tab1, tab2 = st.tabs(
-        [f'Feature importance for {player1} to win over {player2}', 'Logistic Regression Classifier'])
+        [f'{user_selected_player1} win over {user_selected_player2}', f'{user_selected_player2} win over {user_selected_player1}'])
 
     with tab1:
-        st.header(f'Feature importance for {player1} to win over {player2}')
+        st.header(
+            f'Feature importance for {user_selected_player1} to win over {user_selected_player2}')
 
         X = df_final_for_training.drop(
-            columns=[f'target_{player1}_win', f'target_{player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
+            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
 
-        y = df_final_for_training[f'target_{player1}_win']
+        y = df_final_for_training[f'target_{user_selected_player1}_win']
 
         model, feature_importance_df = get_feature_importance_random_forest(
             X, y)
@@ -188,6 +213,26 @@ else:
         top_features = top_features.sort_values(
             by='Importance', ascending=False)
         top_features = top_features.iloc[::-1]
-        fig = px.bar(top_features, x='Importance', y='Feature',
-                     orientation='h', title='Top 5 Feature Importances')
-        st.plotly_chart(fig)
+        fig1 = px.bar(top_features, x='Importance', y='Feature',
+                      orientation='h', title='Top 5 Feature Importances')
+        st.plotly_chart(fig1, key='fig1')
+
+    with tab2:
+        st.header(
+            f'Feature importance for {user_selected_player2} to win over {user_selected_player1}')
+
+        X = df_final_for_training.drop(
+            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
+
+        y = df_final_for_training[f'target_{user_selected_player2}_win']
+
+        model, feature_importance_df = get_feature_importance_random_forest(
+            X, y)
+
+        top_features = feature_importance_df.head(5)
+        top_features = top_features.sort_values(
+            by='Importance', ascending=False)
+        top_features = top_features.iloc[::-1]
+        fig2 = px.bar(top_features, x='Importance', y='Feature',
+                      orientation='h', title='Top 5 Feature Importances')
+        st.plotly_chart(fig2, key='fig2')

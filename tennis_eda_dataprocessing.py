@@ -86,14 +86,14 @@ concatenate_and_save_match_summaries()
 
 # %%
 # Read the concatenated master file from the repo
-def get_player_match_subset(player1, player2):
+def get_player_match_subset(user_selected_player1, user_selected_player2):
 
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
 
     # getting just the subset of matches where the specified players played against each other
-    player_list = [player1, player2]
+    player_list = [user_selected_player1, user_selected_player2]
     df_concat_subset = df_concat.query(
         'winner_name in @player_list and loser_name in @player_list')
 
@@ -122,7 +122,7 @@ def get_player_match_subset(player1, player2):
 # %%
 
 
-def get_win_rate_by_year(df_concat_subset, player1, player2, top_winner):
+def get_win_rate_by_year(df_concat_subset, user_selected_player1, user_selected_player2, top_winner):
     # Check if there are at least 20 matches
     if len(df_concat_subset) >= 20:
         # group by year and get the mean of the 'Novak_Wins' column and number of rows in each year
@@ -149,7 +149,7 @@ def get_win_rate_by_year(df_concat_subset, player1, player2, top_winner):
 # get the match charting master data for the specified players
 
 
-def get_match_charting_master_data(player1, player2):
+def get_match_charting_master_data(user_selected_player1, user_selected_player2):
     dfs = []
 
     for csv_file in match_charting_master:
@@ -167,7 +167,7 @@ def get_match_charting_master_data(player1, player2):
     for i in range(len(dfs)):
         df_concat = pd.concat([df_concat, dfs[i]])
 
-    player_list = [player1, player2]
+    player_list = [user_selected_player1, user_selected_player2]
     df_concat_subset = df_concat.query(
         '`Player 1` in @player_list and `Player 2` in @player_list')
 
@@ -187,7 +187,7 @@ def get_match_charting_master_data(player1, player2):
 # get the rally stats file and do some preprocessing on it
 
 
-def get_rally_stats_data(player1, player2):
+def get_rally_stats_data(user_selected_player1, user_selected_player2):
     dfs = []
 
     # this file has some trailing commas which is causing the read_csv function to fail, so
@@ -210,8 +210,8 @@ def get_rally_stats_data(player1, player2):
     for i in range(len(dfs)):
         df_concat = pd.concat([df_concat, dfs[i]])
 
-    # Keep only rows where 'server' or 'returner' column is either player1 or player2
-    player_list = [player1, player2]
+    # Keep only rows where 'server' or 'returner' column is either user_selected_player1 or user_selected_player2
+    player_list = [user_selected_player1, user_selected_player2]
     df_concat = df_concat.query(
         'server in @player_list or returner in @player_list')
 
@@ -330,7 +330,7 @@ def process_match_charting_overview_stats(df_match_charting_overview_stats):
     # drop duplicates before pivoting. Some times same match_id player combinations have multiple rows
     df = df.drop_duplicates(subset=['match_id', 'player_serve_order'])
 
-    # pivot data such that there are separate columns for player1 and player2
+    # pivot data such that there are separate columns for p1 (served first) and p2 (served second)
     df_pivot = df.pivot(index='match_id', columns='player_serve_order', values=['serve_pts', 'aces', 'dfs', 'first_in',
                                                                                 'first_won', 'second_in', 'second_won', 'bk_pts', 'bp_saved',
                                                                                 'return_pts', 'return_pts_won', 'winners', 'winners_fh', 'winners_bh',
@@ -397,7 +397,7 @@ def create_additional_features(df):
 # %%
 
 
-def align_features_with_target(df, player1, player2):
+def align_features_with_winner_loser_and_create_target(df, user_selected_player1, user_selected_player2):
 
     # List of feature columns to swap between Player 1 and Player 2
     player_dependent_feature_columns = [
@@ -424,10 +424,10 @@ def align_features_with_target(df, player1, player2):
 
     # Create target variable columns - 1 for each player so that model can learn feature importance from
     # both players perspective
-    df[f'target_{player1}_win'] = df['winner_name'].apply(
-        lambda x: 1 if x == player1 else 0)
-    df[f'target_{player2}_win'] = df['winner_name'].apply(
-        lambda x: 1 if x == player2 else 0)
+    df[f'target_{user_selected_player1}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == user_selected_player1 else 0)
+    df[f'target_{user_selected_player2}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == user_selected_player2 else 0)
 
     # Rename p1_ and p2_ prefixes to winner_ and loser_
     df.rename(
@@ -436,6 +436,50 @@ def align_features_with_target(df, player1, player2):
         columns={f'p2_{col}': f'loser_{col}' for col in player_dependent_feature_columns}, inplace=True)
 
     return df
+
+# %%
+
+
+def align_features_with_selected_players_and_create_target(df, user_selected_player1, user_selected_player2):
+
+    # List of feature columns to swap between Player 1 and Player 2
+    player_dependent_feature_columns = [
+        'aces_perc', 'dfs_perc',
+        'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+        'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc', 'winners_bh_perc',
+        'unforced_fh_perc', 'unforced_bh_perc'
+    ]
+
+    player_independent_feature_columns = [
+        'winner_loser_rank_diff', 'tight_match']
+
+    # Iterate through each row in the DataFrame
+    for index, row in df.iterrows():
+        # Check if Player 2 is the user_selected_player1
+        if row['Player 2'] == user_selected_player1:
+            # Swap the feature values between Player 1 and Player 2
+            for col in player_dependent_feature_columns:
+                p1_col = f'p1_{col}'
+                p2_col = f'p2_{col}'
+                # Swap the values of Player 1 and Player 2 for the current feature
+                df.at[index, p1_col], df.at[index,
+                                            p2_col] = row[p2_col], row[p1_col]
+
+    # Create target variable columns - 1 for each player so that model can learn feature importance from
+    # both players perspective
+    df[f'target_{user_selected_player1}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == user_selected_player1 else 0)
+    df[f'target_{user_selected_player2}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == user_selected_player2 else 0)
+
+    # Rename p1_ and p2_ prefixes to user_selected_player1_ and user_selected_player2_
+    df.rename(
+        columns={f'p1_{col}': f'{user_selected_player1}_{col}' for col in player_dependent_feature_columns}, inplace=True)
+    df.rename(
+        columns={f'p2_{col}': f'{user_selected_player2}_{col}' for col in player_dependent_feature_columns}, inplace=True)
+
+    return df
+
 
 # %%
 

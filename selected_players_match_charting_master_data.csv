@@ -1,31 +1,48 @@
 match_id,Player 1,Player 2,Pl 1 hand,Pl 2 hand,Date,Tournament,Round,Time,Court,Surface,Umpire,Best of,Final TB?,Charted by,year,custom_match_id
-20170107-M-Doha-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20170107,Doha,F,,,Hard,,3,1,Isaac,2017,2017_Doha_F_Andy Murray_Novak Djokovic
-20161120-M-Tour_Finals-F-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20161120,Tour Finals,F,19:15,Centre,Hard,Carlos Bernardes,3,1,Edo,2016,2016_Tour Finals_F_Andy Murray_Novak Djokovic
-20160515-M-Rome_Masters-F-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20160515,Rome Masters,F,,Centrale,Clay,Damian Steiner,3,1,Edged,2016,2016_Rome Masters_F_Andy Murray_Novak Djokovic
-20160131-M-Australian_Open-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20160131,Australian Open,F,,Rod Laver Arena,Hard,Carlos Ramos,5,0,Edged,2016,2016_Australian Open_F_Andy Murray_Novak Djokovic
-20151108-M-Paris-F-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20151108,Paris,F,3:30 PM,Centre,Hard,Cedric Mourier,3,1,Edo,2015,2015_Paris_F_Andy Murray_Novak Djokovic
-20151017-M-Shanghai_Masters-SF-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20151017,Shanghai Masters,SF,,,Hard,Carlos Bernardes,3,1,Amy,2015,2015_Shanghai Masters_SF_Andy Murray_Novak Djokovic
-20150816-M-Canada_Masters-F-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20150816,Canada Masters,F,15:15,,Hard,,3,1,Lowell,2015,2015_Canada Masters_F_Andy Murray_Novak Djokovic
-20150605-M-Roland_Garros-SF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20150605,Roland Garros,SF,5.30pm,Philippe Chatrier,Clay,Pascal Maria,5,0,Edo,2015,2015_Roland Garros_SF_Andy Murray_Novak Djokovic
-20150405-M-Miami_Masters-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20150405,Miami Masters,F,,Center,Hard,Damien Dumusois,3,1,1HandBH,2015,2015_Miami Masters_F_Andy Murray_Novak Djokovic
-20150321-M-Indian_Wells_Masters-SF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20150321,Indian Wells Masters,SF,11am,Stadium 1,Hard,Carlos Bernardes,3,1,Edo,2015,2015_Indian Wells Masters_SF_Andy Murray_Novak Djokovic
-20150201-M-Australian_Open-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20150201,Australian Open,F,,Rod Laver,Hard,,5,0,Lowell,2015,2015_Australian Open_F_Andy Murray_Novak Djokovic
-20141004-M-Beijing-SF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20141004,Beijing,SF,1pm,National Tennis Stadium,Hard,Damian Steiner,3,1,Edo,2014,2014_Beijing_SF_Andy Murray_Novak Djokovic
-20140903-M-US_Open-QF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20140903,US Open,QF,9pm,Ashe,Hard,Pascal Maria,5,1,Edo,2014,2014_US Open_QF_Andy Murray_Novak Djokovic
-20140326-M-Miami_Masters-QF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20140326,Miami Masters,QF,3pm,Stadium,Hard,Damien Steiner,3,1,Edo,2014,2014_Miami Masters_QF_Andy Murray_Novak Djokovic
-20130707-M-Wimbledon-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20130707,Wimbledon,F,14:15,Centre,Grass,Mohamed Lahyani,5,0,Verity or @vab14,2013,2013_Wimbledon_F_Andy Murray_Novak Djokovic
-20130127-M-Australian_Open-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20130127,Australian Open,F,,,Hard,,5,0,Amy,2013,2013_Australian Open_F_Andy Murray_Novak Djokovic
-20121107-M-Tour_Finals-RR-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20121107,Tour Finals,RR,15:00,Centre,Hard,Lars Graff,3,1,Edo,2012,2012_Tour Finals_RR_Andy Murray_Novak Djokovic
-20121008-M-Shanghai_Masters-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20121008,Shanghai Masters,F,,,Hard,,3,0,DanF,2012,2012_Shanghai Masters_F_Andy Murray_Novak Djokovic
-20120909-M-US_Open-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20120909,US Open,F,,Arthur Ashe,Hard,,5,1,Amy,2012,2012_US Open_F_Andy Murray_Novak Djokovic
-20120803-M-Olympics-SF-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20120803,Olympics,SF,18:30,Centre,Grass,Jake Garner,3,0,hnjc95,2012,2012_Olympics_SF_Andy Murray_Novak Djokovic
-20120401-M-Miami_Masters-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20120401,Miami Masters,F,13:15,Stadium,Hard,Damian Steiner,3,1,Edo,2012,2012_Miami Masters_F_Andy Murray_Novak Djokovic
-20120227-M-Dubai-SF-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20120227,Dubai,SF,,Centre,Hard,,3,1,Isaac,2012,2012_Dubai_SF_Andy Murray_Novak Djokovic
-20120127-M-Australian_Open-SF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20120127,Australian Open,SF,,Rod Laver Arena,Hard,,5,0,Isaac,2012,2012_Australian Open_SF_Andy Murray_Novak Djokovic
-20110821-M-Cincinnati_Masters-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20110821,Cincinnati Masters,F,,Center,Hard,Fergus Murphy,3,1,Salvo,2011,2011_Cincinnati Masters_F_Andy Murray_Novak Djokovic
-20110513-M-Rome_Masters-SF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20110513,Rome Masters,SF,,,Clay,,3,1,Isaac,2011,2011_Rome Masters_SF_Andy Murray_Novak Djokovic
-20110130-M-Australian_Open-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20110130,Australian Open,F,,,Hard,,3,1,Isaac,2011,2011_Australian Open_F_Andy Murray_Novak Djokovic
-20090405-M-Miami_Masters-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20090405,Miami Masters,F,,,Hard,Gerry Armstrong,3,1,Isaac,2009,2009_Miami Masters_F_Andy Murray_Novak Djokovic
-20080803-M-Cincinnati_Masters-F-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20080803,Cincinnati Masters,F,15:15,Center,Hard,Mohamed Lahyani,3,1,Edo,2008,2008_Cincinnati Masters_F_Andy Murray_Novak Djokovic
-20070330-M-Miami_Masters-SF-Novak_Djokovic-Andy_Murray,Novak Djokovic,Andy Murray,R,R,20070330,Miami Masters,SF,,,Hard,,3,1,Isaac,2007,2007_Miami Masters_SF_Andy Murray_Novak Djokovic
-20070305-M-Indian_Wells-SF-Andy_Murray-Novak_Djokovic,Andy Murray,Novak Djokovic,R,R,20070305,Indian Wells,SF,,,Hard,,3,1,DanF,2007,2007_Indian Wells_SF_Andy Murray_Novak Djokovic
+20200130-M-Australian_Open-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20200130,Australian Open,SF,19:45,Rod Laver,Hard,Nico Helwerth,5,A,Zindaras,2020,2020_Australian Open_SF_Novak Djokovic_Roger Federer
+20191114-M-Tour_Finals-RR-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20191114,Tour Finals,RR,21:10,Centre,Hard,Mohamed Lahyani,3,1,Edo,2019,2019_Tour Finals_RR_Novak Djokovic_Roger Federer
+20190714-M-Wimbledon-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20190714,Wimbledon,F,14:10,Centre,Grass,Damian Steiner,5,T,Zindaras,2019,2019_Wimbledon_F_Novak Djokovic_Roger Federer
+20181103-M-Paris_Masters-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20181103,Paris Masters,SF,17:45,Centre,Hard,Carlos Bernardes,3,1,Palaver,2018,2018_Paris Masters_SF_Novak Djokovic_Roger Federer
+20180819-M-Cincinnati_Masters-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20180819,Cincinnati Masters,F,16:45,Center,Hard,Damien Dumusois,3,1,Palaver,2018,2018_Cincinnati Masters_F_Novak Djokovic_Roger Federer
+20160128-M-Australian_Open-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20160128,Australian Open,SF,,Rod Laver Arena,Hard,,5,0,Edged,2016,2016_Australian Open_SF_Novak Djokovic_Roger Federer
+20151122-M-Tour_Finals-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20151122,Tour Finals,F,,,Hard,,3,1,Amy,2015,2015_Tour Finals_F_Novak Djokovic_Roger Federer
+20151117-M-Tour_Finals-RR-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20151117,Tour Finals,RR,21:10,Centre,Hard,Mohamed Lahyani,3,1,Edo,2015,2015_Tour Finals_RR_Novak Djokovic_Roger Federer
+20150913-M-US_Open-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20150913,US Open,F,20:00:00,Arthur Ashe,Hard,Eva Asderaki-Moore,5,1,Edo,2015,2015_US Open_F_Novak Djokovic_Roger Federer
+20150823-M-Cincinnati_Masters-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20150823,Cincinnati Masters,F,13:10,Center,Hard,Mohamed Lahyani,3,1,Isaac,2015,2015_Cincinnati Masters_F_Novak Djokovic_Roger Federer
+20150712-M-Wimbledon-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20150712,Wimbledon,F,14:10,Centre,Grass,Ali Nili,5,0,Edo,2015,2015_Wimbledon_F_Novak Djokovic_Roger Federer
+20150517-M-Rome_Masters-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20150517,Rome Masters,F,,Centre,Clay,Damian Steiner,3,1,Aaron Chiu,2015,2015_Rome Masters_F_Novak Djokovic_Roger Federer
+20150322-M-Indian_Wells_Masters-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20150322,Indian Wells Masters,F,,Center,Hard,,3,1,camyu19,2015,2015_Indian Wells Masters_F_Novak Djokovic_Roger Federer
+20150228-M-Dubai-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20150228,Dubai,F,,,Hard,Mohamed Lahyani,3,1,FedFan,2015,2015_Dubai_F_Novak Djokovic_Roger Federer
+20140706-M-Wimbledon-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20140706,Wimbledon,F,14:10,Centre Court,Grass,James Keothavong,5,0,1HandBH,2014,2014_Wimbledon_F_Novak Djokovic_Roger Federer
+20140413-M-Monte_Carlo_Masters-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20140413,Monte Carlo Masters,SF,,,Clay,,3,0,DanF,2014,2014_Monte Carlo Masters_SF_Novak Djokovic_Roger Federer
+20140228-M-Dubai-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20140228,Dubai,SF,,Centre,Hard,Mohamed El Jennati,3,1,Sagar Manohar,2014,2014_Dubai_SF_Novak Djokovic_Roger Federer
+20131105-M-Tour_Finals-RR-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20131105,Tour Finals,RR,,O2 Arena,Hard,,3,1,camyu19,2013,2013_Tour Finals_RR_Novak Djokovic_Roger Federer
+20131102-M-Paris_Masters-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20131102,Paris Masters,SF,,,Hard,,3,1,Isaac,2013,2013_Paris Masters_SF_Novak Djokovic_Roger Federer
+20121112-M-Tour_Finals-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20121112,Tour Finals,F,21:15,O2 arena,Hard,Lars Graff,3,1,Sagar Manohar,2012,2012_Tour Finals_F_Novak Djokovic_Roger Federer
+20120818-M-Cincinnati_Masters-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20120818,Cincinnati Masters,F,,,Hard,,3,1,Amy,2012,2012_Cincinnati Masters_F_Novak Djokovic_Roger Federer
+20120706-M-Wimbledon-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20120706,Wimbledon,SF,,Centre,Grass,,5,0,Geethika,2012,2012_Wimbledon_SF_Novak Djokovic_Roger Federer
+20120608-M-Roland_Garros-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20120608,Roland Garros,SF,,Centre,Clay,,5,0,JEH,2012,2012_Roland Garros_SF_Novak Djokovic_Roger Federer
+20120519-M-Rome_Masters-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20120519,Rome Masters,SF,20:10,Centrale,Clay,Damien Dumusois,3,1,Edo,2012,2012_Rome Masters_SF_Novak Djokovic_Roger Federer
+20110909-M-US_Open-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20110909,US Open,SF,,,Hard,,5,1,Isaac,2011,2011_US Open_SF_Novak Djokovic_Roger Federer
+20110603-M-Roland_Garros-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20110603,Roland Garros,SF,,Philippe Chatrier,Clay,,5,0,Edged,2011,2011_Roland Garros_SF_Novak Djokovic_Roger Federer
+20110319-M-Indian_Wells_Masters-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20110319,Indian Wells Masters,SF,2:00:00 PM,Stadium 1,Hard,Steve Ullrich,3,1,Edo,2011,2011_Indian Wells Masters_SF_Novak Djokovic_Roger Federer
+20110221-M-Dubai-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20110221,Dubai,F,,,Hard,Mohamed Lahyani,3,1,Isaac,2011,2011_Dubai_F_Novak Djokovic_Roger Federer
+20110127-M-Australian_Open-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20110127,Australian Open,SF,,Rod Laver Arena,Hard,Enric Molina,5,0,Tanmay,2011,2011_Australian Open_SF_Novak Djokovic_Roger Federer
+20101126-M-Tour_Finals-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20101126,Tour Finals,SF,,,Hard,,3,1,Isaac,2010,2010_Tour Finals_SF_Novak Djokovic_Roger Federer
+20101107-M-Basel-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20101107,Basel,F,16:10,Centre,Hard,Mohamed Lahyani,3,1,Edo,2010,2010_Basel_F_Novak Djokovic_Roger Federer
+20101015-M-Shanghai_Masters-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20101015,Shanghai Masters,SF,,Stadium,Hard,,3,1,Isaac,2010,2010_Shanghai Masters_SF_Novak Djokovic_Roger Federer
+20100903-M-US_Open-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20100903,US Open,SF,3pm,Ashe,Hard,Enric Molina,5,1,Edo,2010,2010_US Open_SF_Novak Djokovic_Roger Federer
+20100815-M-Canada_Masters-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20100815,Canada Masters,SF,,,Hard,,3,1,Isaac,2010,2010_Canada Masters_SF_Novak Djokovic_Roger Federer
+20091108-M-Basel-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20091108,Basel,F,16:25,Centre,Hard,Lars Graff,3,1,Edo,2009,2009_Basel_F_Novak Djokovic_Roger Federer
+20090913-M-US_Open-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20090913,US Open,SF,,Arthur Ashe,Hard,,5,1,camyu19,2009,2009_US Open_SF_Novak Djokovic_Roger Federer
+20090816-M-Cincinnati_Masters-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20090816,Cincinnati Masters,F,,,Hard,,3,1,Isaac,2009,2009_Cincinnati Masters_F_Novak Djokovic_Roger Federer
+20090503-M-Rome_Masters-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20090503,Rome Masters,SF,14:00:00,Pietrangeli,Clay,Carlos Bernardes,3,1,Edo,2009,2009_Rome Masters_SF_Novak Djokovic_Roger Federer
+20090404-M-Miami_Masters-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20090404,Miami Masters,SF,3pm,Stadium,Hard,Fergus Murphy,3,1,Edo,2009,2009_Miami Masters_SF_Novak Djokovic_Roger Federer
+20080419-M-Monte_Carlo_Masters-SF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20080419,Monte Carlo Masters,SF,14:00,Central,Clay,Carlos Bernardes,3,1,Edo,2008,2008_Monte Carlo Masters_SF_Novak Djokovic_Roger Federer
+20080127-M-Australian_Open-SF-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20080127,Australian Open,SF,,Rod Laver Arena,Hard,,5,0,Isaac,2008,2008_Australian Open_SF_Novak Djokovic_Roger Federer
+20070909-M-US_Open-F-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20070909,US Open,F,4:00 PM,Ashe,Hard,Jake Garner,5,1,Edo,2007,2007_US Open_F_Novak Djokovic_Roger Federer
+20070812-M-Canada_Masters-F-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20070812,Canada Masters,F,,Montreal,Hard,Gerry Armstrong,3,1,Edo,2007,2007_Canada Masters_F_Novak Djokovic_Roger Federer
+20070301-M-Dubai-QF-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20070301,Dubai,QF,20:15,Centre,Hard,Mohamed Lahyani,3,1,Edo,2007,2007_Dubai_QF_Novak Djokovic_Roger Federer
+20070122-M-Australian_Open-R16-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20070122,Australian Open,R16,7pm,Rod Laver Arena,Hard,Alison Hughes,5,0,Edo,2007,2007_Australian Open_R16_Novak Djokovic_Roger Federer
+20060922-M-Davis_Cup_World_Group_PO-RR-Roger_Federer-Novak_Djokovic,Roger Federer,Novak Djokovic,R,R,20060922,Davis Cup World Group PO,RR,,,Hard,,3,1,Isaac,2006,2006_Davis Cup World Group PO_RR_Novak Djokovic_Roger Federer
+20060419-M-Monte_Carlo_Masters-R64-Novak_Djokovic-Roger_Federer,Novak Djokovic,Roger Federer,R,R,20060419,Monte Carlo Masters,R64,2:30:00 PM,Central,Clay,Pascal Maria,3,1,Edo,2006,2006_Monte Carlo Masters_R64_Novak Djokovic_Roger Federer
