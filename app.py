@@ -21,7 +21,8 @@ from tennis_eda_dataprocessing import (
     create_additional_features,
     align_features_with_winner_loser_and_create_target,
     align_features_with_selected_players_and_create_target,
-    get_feature_importance_random_forest
+    get_feature_importance_random_forest,
+    get_feature_importance_xgboost
 
 
 )
@@ -195,32 +196,32 @@ else:
 
     # Create tabs for different sections
     tab1, tab2, tab3 = st.tabs(
-        ['Top 5 Factors that predict the winner', f'Factors specific to {user_selected_player1} win', f'Factors specific to {user_selected_player2} win'])
+        ['Top 5 Factors that predict the winner', f'Factors specific to {user_selected_player1} win',
+         f'Factors specific to {user_selected_player2} win'
+         ])
 
     with tab1:
-        st.header(
-            f'Feature importance for predicting generic winner')
-
+        st.header('XGBoost Feature Importance for predicting generic winner')
         X = df_final_for_training_winner_loser_feature_aligned.drop(
             columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
 
         y = df_final_for_training_winner_loser_feature_aligned[
             f'target_{user_selected_player1}_win']
 
-        model, feature_importance_df = get_feature_importance_random_forest(
+        model_xgb, feature_importance_df_xgb = get_feature_importance_xgboost(
             X, y)
 
-        top_features = feature_importance_df.head(5)
-        top_features = top_features.sort_values(
+        top_features_xgb = feature_importance_df_xgb.head(5)
+        top_features_xgb = top_features_xgb.sort_values(
             by='Importance', ascending=False)
-        top_features = top_features.iloc[::-1]
-        fig = px.bar(top_features, x='Importance', y='Feature',
-                     orientation='h', title='Top 5 Feature Importances')
-        st.plotly_chart(fig, key='fig')
+        top_features_xgb = top_features_xgb.iloc[::-1]
+        fig_xgb = px.bar(top_features_xgb, x='Importance', y='Feature',
+                         orientation='h', title='Top 5 Feature Importances (XGBoost)')
+        st.plotly_chart(fig_xgb, key='fig_xgb')
 
     with tab2:
         st.header(
-            f'Factors specific to {user_selected_player1} win')
+            f'XGBoost Feature Importance specific to {user_selected_player1} win')
 
         X1 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
             columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win',
@@ -234,21 +235,20 @@ else:
         y1 = df_final_for_training_user_selected_p1p2_feature_aligned[
             f'target_{user_selected_player1}_win']
 
-        model1, feature_importance_df1 = get_feature_importance_random_forest(
+        model_xgb1, feature_importance_df_xgb1 = get_feature_importance_xgboost(
             X1, y1)
 
-        top_features1 = feature_importance_df1.head(5)
-        top_features1 = top_features1.sort_values(
+        top_features_xgb1 = feature_importance_df_xgb1.head(5)
+        top_features_xgb1 = top_features_xgb1.sort_values(
             by='Importance', ascending=False)
-        top_features1 = top_features1.iloc[::-1]
-        fig1 = px.bar(top_features1, x='Importance', y='Feature',
-                      orientation='h', title='Top 5 Feature Importances')
-        st.plotly_chart(fig1, key='fig1')
+        top_features_xgb1 = top_features_xgb1.iloc[::-1]
+        fig_xgb1 = px.bar(top_features_xgb1, x='Importance', y='Feature',
+                          orientation='h', title='Top 5 Feature Importances (XGBoost)')
+        st.plotly_chart(fig_xgb1, key='fig_xgb1')
 
     with tab3:
         st.header(
-            f'Factors specific to {user_selected_player2} win')
-
+            f'XGBoost Feature Importance specific to {user_selected_player2} win')
         X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
             columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win',
                      'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
@@ -261,13 +261,13 @@ else:
         y2 = df_final_for_training_user_selected_p1p2_feature_aligned[
             f'target_{user_selected_player2}_win']
 
-        model2, feature_importance_df2 = get_feature_importance_random_forest(
+        model_xgb2, feature_importance_df_xgb2 = get_feature_importance_xgboost(
             X2, y2)
 
-        top_features2 = feature_importance_df2.head(5)
-        top_features2 = top_features2.sort_values(
+        top_features_xgb2 = feature_importance_df_xgb2.head(5)
+        top_features_xgb2 = top_features_xgb2.sort_values(
             by='Importance', ascending=False)
-        top_features2 = top_features2.iloc[::-1]
-        fig2 = px.bar(top_features2, x='Importance', y='Feature',
-                      orientation='h', title='Top 5 Feature Importances')
-        st.plotly_chart(fig2, key='fig2')
+        top_features_xgb2 = top_features_xgb2.iloc[::-1]
+        fig_xgb2 = px.bar(top_features_xgb2, x='Importance', y='Feature',
+                          orientation='h', title='Top 5 Feature Importances (XGBoost)')
+        st.plotly_chart(fig_xgb2, key='fig_xgb2')

@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import seaborn as sns
 import streamlit as st
+from xgboost import XGBClassifier
 # %%
 # Replace with your GitHub repository details
 data_source_user = 'JeffSackmann'
@@ -539,3 +540,21 @@ def get_feature_importance_random_forest(X, y):
     return model, feature_importance_df
 
 # %%
+
+
+def get_feature_importance_xgboost(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42)
+
+    model = XGBClassifier(use_label_encoder=False, eval_metric='logloss')
+    model.fit(X_train, y_train)
+
+    feature_importances = model.feature_importances_
+    feature_names = X.columns
+
+    feature_importance_df = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': feature_importances
+    }).sort_values(by='Importance', ascending=False)
+
+    return model, feature_importance_df
