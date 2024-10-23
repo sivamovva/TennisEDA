@@ -62,4 +62,11 @@ Features from #3 (overview stats): (each will have 2 columns - for winner and lo
 
 3) Key points, return outcomes, Rally shot direction, and return depth, and serve direction - these all can be next level of detail. 
 
+- return depth (% of deep, shallow, etc per match)
+- serve influence file (look into this - it has % win by shot length)
+- shot direction outcomes (we can get a ratio of shots_in_pts_won/(shots_in_pts_won + shots_in_pts_lost) and make this almost a shot effectiveness metric - probability of winning a point if a player played that shot in that match; so for each match, we can have F-XCeff, F-DLeff etc features and we can draw conclusions like if F-XC was really effective on a particular day, player1 had a good chance of winning that match )
+- key points on serve and return - just filter the total column and get % of key points won per player per match -this shoudl be a pretty strong 
+feature
+
+
 

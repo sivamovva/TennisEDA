@@ -171,10 +171,7 @@ st.write(
 )
 
 players = ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic',
-           'Andy Murray', 'Pete Sampras', 'Andre Agassi', 'David Ferrer',
-           'Tomas Berdych', 'Stan Wawrinka', 'Lleyton Hewitt', 'Juan Martin del Potro', 'Andy Roddick', 'Jo-Wilfried Tsonga',
-           'Jim Courier', 'Michael Chang', 'Marat Safin', 'Goran Ivanisevic', 'Patrick Rafter', 'Yevgeny Kafelnikov',
-           'Carlos Moya', 'Richard Gasquet', 'Nikolay Davydenko', 'David Nalbandian', 'Tommy Haas', 'Fernando Gonzalez']
+           'Andy Murray', 'Andre Agassi']
 # Default selections for players
 default_player1 = 'Roger Federer'
 default_player2 = 'Novak Djokovic'
@@ -203,31 +200,12 @@ else:
         st.stop()
 
     # Create tabs for different sections
-    tab1, tab2, tab3 = st.tabs(
-        ['Top 5 Factors that predict the winner', f'Factors specific to {user_selected_player1} win',
+    tab1, tab2 = st.tabs(
+        [f'Factors specific to {user_selected_player1} win',
          f'Factors specific to {user_selected_player2} win'
          ])
 
     with tab1:
-        st.header('XGBoost Feature Importance for predicting generic winner')
-        X = df_final_for_training_winner_loser_feature_aligned.drop(
-            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win', 'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2'])
-
-        y = df_final_for_training_winner_loser_feature_aligned[
-            f'target_{user_selected_player1}_win']
-
-        model_xgb, feature_importance_df_xgb = get_feature_importance_xgboost(
-            X, y)
-
-        top_features_xgb = feature_importance_df_xgb.head(5)
-        top_features_xgb = top_features_xgb.sort_values(
-            by='Importance', ascending=False)
-        top_features_xgb = top_features_xgb.iloc[::-1]
-        fig_xgb = px.bar(top_features_xgb, x='Importance', y='Feature',
-                         orientation='h', title='Top 5 Feature Importances (XGBoost)')
-        st.plotly_chart(fig_xgb, key='fig_xgb')
-
-    with tab2:
         st.header(
             f'XGBoost Feature Importance specific to {user_selected_player1} win')
 
@@ -254,7 +232,7 @@ else:
                           orientation='h', title='Top 5 Feature Importances (XGBoost)')
         st.plotly_chart(fig_xgb1, key='fig_xgb1')
 
-    with tab3:
+    with tab2:
         st.header(
             f'XGBoost Feature Importance specific to {user_selected_player2} win')
         X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(

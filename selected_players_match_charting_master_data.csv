@@ -1,13 +1,2 @@
 match_id,Player 1,Player 2,Pl 1 hand,Pl 2 hand,Date,Tournament,Round,Time,Court,Surface,Umpire,Best of,Final TB?,Charted by,year,custom_match_id
-20190425-M-Barcelona-R16-Rafael_Nadal-David_Ferrer,Rafael Nadal,David Ferrer,L,R,20190425,Barcelona,R16,14:55,Centre,Clay,,3,1,Zindaras,2019,2019_Barcelona_R16_David Ferrer_Rafael Nadal
-20150417-M-Monte_Carlo_Masters-QF-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20150417,Monte Carlo Masters,QF,14:40,Centre,Clay,Damien Dumusois,3,1,DavidAurora,2015,2015_Monte Carlo Masters_QF_David Ferrer_Rafael Nadal
-20140604-M-Roland_Garros-QF-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20140604,Roland Garros,QF,18:45,Suzanne Lenglen,Clay,James Keothavong,5,0,DebLDecker,2014,2014_Roland Garros_QF_David Ferrer_Rafael Nadal
-20140418-M-Monte_Carlo_Masters-QF-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20140418,Monte Carlo Masters,QF,12:40,Central,Clay,Carlos Bernardes,3,1,DebLDecker,2014,2014_Monte Carlo Masters_QF_David Ferrer_Rafael Nadal
-20131102-M-Paris_Masters-SF-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20131102,Paris Masters,SF,,,Hard,,3,1,Isaac,2013,2013_Paris Masters_SF_David Ferrer_Rafael Nadal
-20130609-M-Roland_Garros-F-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20130609,Roland Garros,F,,,Clay,Cedric Mourier,5,0,Amy,2013,2013_Roland Garros_F_David Ferrer_Rafael Nadal
-20130225-M-Acapulco-F-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20130225,Acapulco,F,,,Clay,,3,1,Isaac,2013,2013_Acapulco_F_David Ferrer_Rafael Nadal
-20110424-M-Barcelona-F-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20110424,Barcelona,F,,,Clay,Mohamed Lahyani,3,1,Isaac,2011,2011_Barcelona_F_David Ferrer_Rafael Nadal
-20110417-M-Monte_Carlo-F-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20110417,Monte Carlo,F,2.30PM,Court Central,Clay,C dric Mourier,3,1,Edo,2011,2011_Monte Carlo_F_David Ferrer_Rafael Nadal
-20110126-M-Australian_Open-QF-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20110126,Australian Open,QF,7pm,Rod Laver Arena,Hard,Eva Asderaki-Moore,5,0,Edo,2011,2011_Australian Open_QF_David Ferrer_Rafael Nadal
-20100502-M-Rome_Masters-F-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20100502,Rome Masters,F,16:10,Pietrangeli,Clay,Carlos Bernardes,3,1,Edo,2010,2010_Rome Masters_F_David Ferrer_Rafael Nadal
-20070904-M-US_Open-R16-David_Ferrer-Rafael_Nadal,David Ferrer,Rafael Nadal,R,L,20070904,US Open,R16,3pm,Ashe,Hard,Andreas Egli,5,1,Edo,2007,2007_US Open_R16_David Ferrer_Rafael Nadal
+20010702-M-Wimbledon-R16-Roger_Federer-Pete_Sampras,Roger Federer,Pete Sampras,R,R,20010702,Wimbledon,R16,0:00,Centre,Grass,Mohamed Lahyani,5,0,Edo,2001,2001_Wimbledon_R16_Pete Sampras_Roger Federer
