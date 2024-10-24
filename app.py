@@ -22,7 +22,8 @@ from tennis_eda_dataprocessing import (
     align_features_with_winner_loser_and_create_target,
     align_features_with_selected_players_and_create_target,
     get_feature_importance_random_forest,
-    get_feature_importance_xgboost
+    get_feature_importance_xgboost,
+    get_player_match_subset_against_tour
 
 
 )
@@ -163,97 +164,36 @@ st.set_page_config(layout="wide")
 
 # %%
 # Title of the app
-st.title('Pro Tennis -  Head 2 Head Analysis')
+st.title('Pro Tennis -  How do the most successful players win?')
 
 st.write(
-    "In this data app, we will analyze the head to head matches between two players and see if we can find any patterns or trends "
-    "that can help us understand the dynamics of this matchup better"
-)
+    "In this data app, we will analyze the players who have played at least 100 ATP matches since 1990 (a tiny fraction of the total number of players who played professional tennis) and see the factors that determined whether they won or lost a match")
 
-players = ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic',
-           'Andy Murray', 'Andre Agassi']
-# Default selections for players
-default_player1 = 'Roger Federer'
-default_player2 = 'Novak Djokovic'
-# Dropdown menus for selecting players
-col1, col2 = st.columns(2)
-with col1:
-    # Dropdown menus for selecting players with default selections
-    user_selected_player1 = st.selectbox('Select Player 1', players,
-                                         index=players.index(default_player1))
-with col2:
-    user_selected_player2 = st.selectbox('Select Player 2', players,
-                                         index=players.index(default_player2))
+try:
+    # Read the player_subset.parquet file
+    df_player_subset = pd.read_parquet('player_subset.parquet')
+except FileNotFoundError:
+    st.error("The file 'player_subset.parquet' was not found. Please ensure the file is in the correct location.")
+    st.stop()
+except Exception as e:
+    st.error(f"An error occurred while reading the file: {e}")
+    st.stop()
 
-# Ensure that Player 1 and Player 2 are not the same
-if user_selected_player1 == user_selected_player2:
-    st.error(
-        "Player 1 and Player 2 cannot be the same. Please select different players.")
-else:
-    # Check if there are any matches between the selected players
-    try:
-        df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned = load_data(
-            user_selected_player1, user_selected_player2)
-    except ValueError as e:
-        st.warning(
-            f"No matches found between {user_selected_player1} and {user_selected_player2}. Please select different players.")
-        st.stop()
 
-    # Create tabs for different sections
-    tab1, tab2 = st.tabs(
-        [f'Factors specific to {user_selected_player1} win',
-         f'Factors specific to {user_selected_player2} win'
-         ])
+# Get the list of players from the first column of the dataframe
+players = df_player_subset.iloc[:, 0].unique().tolist()
 
-    with tab1:
-        st.header(
-            f'XGBoost Feature Importance specific to {user_selected_player1} win')
 
-        X1 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
-            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win',
-                     'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
-                     f'{user_selected_player2}_aces_perc', f'{user_selected_player2}_dfs_perc', f'{user_selected_player2}_first_in_perc',
-                     f'{user_selected_player2}_first_won_perc', f'{user_selected_player2}_second_won_perc', f'{user_selected_player2}_bp_saved_perc',
-                     f'{user_selected_player2}_return_pts_won_perc', f'{user_selected_player2}_winners_unforced_perc', f'{user_selected_player2}_winner_fh_perc',
-                     f'{user_selected_player2}_winners_bh_perc', f'{user_selected_player2}_unforced_fh_perc', f'{user_selected_player2}_unforced_bh_perc'
-                     ])
+# Add a text input for player search
+player_search = st.text_input(
+    'Type in a player name you are interested in here to get a filtered down list of options below', '')
 
-        y1 = df_final_for_training_user_selected_p1p2_feature_aligned[
-            f'target_{user_selected_player1}_win']
+# Filter players based on search input
+filtered_players = [
+    player for player in players if player_search.lower() in player.lower()]
 
-        model_xgb1, feature_importance_df_xgb1 = get_feature_importance_xgboost(
-            X1, y1)
+# Dropdown menu for selecting a player with filtered options
+user_selected_player = st.selectbox(
+    'Or Select Player directly here (warning: Long list :)', filtered_players, index=0 if filtered_players else -1)
 
-        top_features_xgb1 = feature_importance_df_xgb1.head(5)
-        top_features_xgb1 = top_features_xgb1.sort_values(
-            by='Importance', ascending=False)
-        top_features_xgb1 = top_features_xgb1.iloc[::-1]
-        fig_xgb1 = px.bar(top_features_xgb1, x='Importance', y='Feature',
-                          orientation='h', title='Top 5 Feature Importances (XGBoost)')
-        st.plotly_chart(fig_xgb1, key='fig_xgb1')
-
-    with tab2:
-        st.header(
-            f'XGBoost Feature Importance specific to {user_selected_player2} win')
-        X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
-            columns=[f'target_{user_selected_player1}_win', f'target_{user_selected_player2}_win',
-                     'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
-                     f'{user_selected_player1}_aces_perc', f'{user_selected_player1}_dfs_perc', f'{user_selected_player1}_first_in_perc',
-                     f'{user_selected_player1}_first_won_perc', f'{user_selected_player1}_second_won_perc', f'{user_selected_player1}_bp_saved_perc',
-                     f'{user_selected_player1}_return_pts_won_perc', f'{user_selected_player1}_winners_unforced_perc', f'{user_selected_player1}_winner_fh_perc',
-                     f'{user_selected_player1}_winners_bh_perc', f'{user_selected_player1}_unforced_fh_perc', f'{user_selected_player1}_unforced_bh_perc'
-                     ])
-
-        y2 = df_final_for_training_user_selected_p1p2_feature_aligned[
-            f'target_{user_selected_player2}_win']
-
-        model_xgb2, feature_importance_df_xgb2 = get_feature_importance_xgboost(
-            X2, y2)
-
-        top_features_xgb2 = feature_importance_df_xgb2.head(5)
-        top_features_xgb2 = top_features_xgb2.sort_values(
-            by='Importance', ascending=False)
-        top_features_xgb2 = top_features_xgb2.iloc[::-1]
-        fig_xgb2 = px.bar(top_features_xgb2, x='Importance', y='Feature',
-                          orientation='h', title='Top 5 Feature Importances (XGBoost)')
-        st.plotly_chart(fig_xgb2, key='fig_xgb2')
+df_concat_subset = get_player_match_subset_against_tour(user_selected_player)

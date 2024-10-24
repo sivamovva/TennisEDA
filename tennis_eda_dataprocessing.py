@@ -84,10 +84,45 @@ def concatenate_and_save_match_summaries():
     # Save the concatenated DataFrame as a parquet file
     df_concat.to_parquet('atp_matches_master.parquet', index=False)
 
+    # get all the players involved in the matches
+    all_players = pd.concat(
+        [df_concat['winner_name'], df_concat['loser_name']])
+    # get number of matches played by each player
+    player_match_counts = all_players.value_counts().reset_index()
+    player_match_counts.columns = ['player_name', 'match_count']
+    # get subset of players who have played at least 150 matches on tour
+    player_subset = player_match_counts.query('match_count >= 150')
+    # save this to a parquet file
+    player_subset.to_parquet('player_subset.parquet', index=False)
+
 
 # %%
 # Call the function to concatenate and save the match summaries
 concatenate_and_save_match_summaries()
+# %%
+
+
+@st.cache
+def get_player_match_subset_against_tour(user_selected_player):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of matches where the selected player is either the winner or the loser
+    df_concat_subset = df_concat.query(
+        'winner_name == @user_selected_player or loser_name == @user_selected_player')
+
+    # Calculate the win percentage for the selected player
+    total_matches = len(df_concat_subset)
+    win_percentage = (df_concat_subset['winner_name'] == user_selected_player).sum(
+    ) * 100 / total_matches
+    win_percentage = round(win_percentage)
+
+    # Write to Streamlit
+    st.write(f"{user_selected_player} played {total_matches} matches.")
+    st.write(f"Win percentage: {win_percentage}%")
+
+    return df_concat_subset, win_percentage
 
 
 # %%
