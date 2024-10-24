@@ -76,6 +76,7 @@ realized that any head to head match up has a max of 50 matches and most of them
 Instead of this, what i can do is:
 1) for any selected player (include WTA also) what were the top factors that determined whether they won or lost against rest of the tour? on average?
 2) once we had the above we can go into individual matchups to see how the model from (1) is performing for that specific matchup (even though the specific matchup will also be in the training data, it will still be fun to show the user how the model performs) - hopefully here, we can show that what worked for federer against most the tour did not work for him against Nadal :)
+3) how similar are two players? or who are the players similar to this player in terms of serve direction, return depth, shot selection etc? 
 
 
 
