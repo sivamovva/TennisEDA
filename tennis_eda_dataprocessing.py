@@ -48,6 +48,11 @@ match_charting_rally_stats = [
 match_charting_return_outcomes = [
     'charting-m-stats-ReturnOutcomes.csv']
 match_charting_overview_stats = ['charting-m-stats-Overview.csv']
+match_charting_return_depth = ['charting-m-stats-ReturnDepth.csv']
+match_sharting_short_direction_outcomes = [
+    'charting-m-stats-ShotDirOutcomes.csv']
+match_charting_keypts_return = ['charting-m-stats-KeyPointsReturn.csv']
+match_charting_keypts_serve = ['charting-m-stats-KeyPointsServe.csv']
 
 
 # Base URL for the raw content of the CSV files

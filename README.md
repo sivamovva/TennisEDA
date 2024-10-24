@@ -69,4 +69,13 @@ Features from #3 (overview stats): (each will have 2 columns - for winner and lo
 feature
 
 
+10/24 - revamping the idea of the app.
+
+realized that any head to head match up has a max of 50 matches and most of them are less than that. This is not enough data to train any model on. For example, when looking at Federer vs roddick matchup, xgboost or random forests struggle to generate a feature importnace list - because the dataset is very unbalanced (roddick won just 3 out of the 23 meetings between these two). More over, if i were to go with the original idea of selecting any 2 players and the main insights between those 2 players, for a lot of matchups, there was just 1 match (fed vs sampras) and hard to glean statistical insights from that. 
+
+Instead of this, what i can do is:
+1) for any selected player (include WTA also) what were the top factors that determined whether they won or lost against rest of the tour? on average?
+2) once we had the above we can go into individual matchups to see how the model from (1) is performing for that specific matchup (even though the specific matchup will also be in the training data, it will still be fun to show the user how the model performs) - hopefully here, we can show that what worked for federer against most the tour did not work for him against Nadal :)
+
+
 
