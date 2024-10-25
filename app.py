@@ -68,8 +68,6 @@ if user_selected_player:
     df_concat_subset = get_player_match_subset_against_tour(
         user_selected_player)
 
-    # Artificial delay to simulate loading time
-
     with st.spinner('Player win percentage by year...'):
         try:
             from tennis_eda_dataprocessing import (
@@ -84,4 +82,19 @@ if user_selected_player:
         except Exception as e:
             st.error(
                 f"An error occurred while getting the player win percentage by year: {e}")
+            st.stop()
+
+    with st.spinner('Getting detailed match data for learning patterns...'):
+        try:
+            from tennis_eda_dataprocessing import (
+                load_data_selected_player_against_tour
+                )   # noqa
+            df_final_for_training_user_selected_p1p2_feature_aligned = load_data_selected_player_against_tour(
+                user_selected_player, df_concat_subset)
+            st.write(
+                df_final_for_training_user_selected_p1p2_feature_aligned.head())
+
+        except Exception as e:
+            st.error(
+                f"An error occurred while getting the match data for player: {e}")
             st.stop()

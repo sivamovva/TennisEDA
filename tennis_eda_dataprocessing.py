@@ -95,10 +95,74 @@ def concatenate_and_save_match_summaries():
     # save this to a parquet file
     player_subset.to_parquet('player_subset.parquet', index=False)
 
+# %%
+# concatenate and save match_charting_master_data as a parquet file
+
+
+def concatenate_and_save_match_charting_master_data():
+    dfs = []
+
+    for csv_file in match_charting_master:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip', engine='python')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.DataFrame()
+    for i in range(len(dfs)):
+        df_concat = pd.concat([df_concat, dfs[i]])
+
+    # create a year column from the Date column
+    df_concat['year'] = df_concat['Date'].astype('str').str[:4]
+
+    # create unique match id column: concatenate year, tournament name, Player 1 and Player 2 (sorted alphabetically)
+    df_concat['custom_match_id'] = df_concat['year'] + '_' + df_concat['Tournament'] + '_' + \
+        df_concat['Round'] + '_' + df_concat[['Player 1', 'Player 2']].apply(
+            lambda x: '_'.join(sorted(x)), axis=1)
+
+    df_concat.to_parquet('match_charting_master_data.parquet', index=False)
+
+# %%
+# define function to concatenate and save match charting overview stats as a parquet file
+
+
+def concatenate_and_save_match_charting_overview_stats():
+    dfs = []
+
+    for csv_file in match_charting_overview_stats:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.DataFrame()
+    for i in range(len(dfs)):
+        df_concat = pd.concat([df_concat, dfs[i]])
+
+    # Keep only rows where 'set' column is 'Total'
+    df_concat = df_concat[df_concat['set'] == 'Total']
+
+    df_concat.to_parquet('match_charting_overview_stats.parquet', index=False)
+
 
 # %%
 # Call the function to concatenate and save the match summaries
 concatenate_and_save_match_summaries()
+# %%
+# Call the function to concatenate and save the match charting master data
+concatenate_and_save_match_charting_master_data()
+# %%
+# Call the function to concatenate and save the match charting overview stats
+concatenate_and_save_match_charting_overview_stats()
+
 # %%
 
 
@@ -140,9 +204,41 @@ def get_player_match_subset_against_tour(user_selected_player):
 
     return df_concat_subset
 
+# %%
+
+
+@st.cache_data
+def get_match_charting_master_against_tour(user_selected_player):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_master_data.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of matches where the selected player is either Player 1 or Player 2
+    df_concat_subset = df_concat.query(
+        '`Player 1` == @user_selected_player or `Player 2` == @user_selected_player')
+
+    # return the match charting master data for the selected player
+    return df_concat_subset
+# %%
+
+
+@st.cache_data
+def get_match_charting_overview_stats_against_tour(user_selected_player):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_overview_stats.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of matches where the selected player is either Player 1 or Player 2
+    df_concat_subset = df_concat.query(
+        '`Player 1` == @user_selected_player or `Player 2` == @user_selected_player')
+
+    # return the match charting overview stats data for the selected player
+    return df_concat_subset
 
 # %%
 # Read the concatenated master file from the repo
+
+
 def get_player_match_subset(user_selected_player1, user_selected_player2):
 
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
@@ -539,6 +635,48 @@ def align_features_with_selected_players_and_create_target(df, user_selected_pla
 
     return df
 
+# %%
+
+
+def align_features_with_selected_player_vs_rest_of_tour_and_create_target(df, user_selected_player):
+
+    # List of feature columns to swap between Player 1 and Player 2
+    player_dependent_feature_columns = [
+        'aces_perc', 'dfs_perc',
+        'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
+        'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc', 'winners_bh_perc',
+        'unforced_fh_perc', 'unforced_bh_perc'
+    ]
+
+    player_independent_feature_columns = [
+        'winner_loser_rank_diff', 'tight_match']
+
+    # Iterate through each row in the DataFrame
+    for index, row in df.iterrows():
+        # Check if Player 2 is the user_selected_player
+        if row['Player 2'] == user_selected_player:
+            # Swap the feature values between Player 1 and Player 2
+            for col in player_dependent_feature_columns:
+                p1_col = f'p1_{col}'
+                p2_col = f'p2_{col}'
+                # Swap the values of Player 1 and Player 2 for the current feature
+                df.at[index, p1_col], df.at[index,
+                                            p2_col] = row[p2_col], row[p1_col]
+
+    # Create target variable columns - 1 for each player so that model can learn feature importance from
+    # both players perspective
+    df[f'target_{user_selected_player}_win'] = df['winner_name'].apply(
+        lambda x: 1 if x == user_selected_player else 0)
+    df[f'target_opponent_win'] = df['winner_name'].apply(
+        lambda x: 0 if x == user_selected_player else 1)
+
+    # Rename p1_ and p2_ prefixes to user_selected_player1_ and opponent
+    df.rename(
+        columns={f'p1_{col}': f'{user_selected_player}_{col}' for col in player_dependent_feature_columns}, inplace=True)
+    df.rename(
+        columns={f'p2_{col}': f'opponent_{col}' for col in player_dependent_feature_columns}, inplace=True)
+
+    return df
 
 # %%
 
@@ -619,7 +757,84 @@ def get_feature_importance_xgboost(X, y):
 
 
 # %%
+@st.cache_data
+def load_data_selected_player_against_tour(user_selected_player, df_concat_subset):
+    # get match charting master data for the selected player
+    df_match_charting_master = get_match_charting_master_against_tour(
+        user_selected_player)
 
+    # get match charting overview stats data for the selected player
+    df_match_charting_overview_stats = get_match_charting_overview_stats_against_tour(
+        user_selected_player)
+
+    # looks like Jeff Sackman recently changed the format of the overview stats. player column went from 1/2 (serve order) to
+    # actual player names, this happened on Oct 18th, 2024 - his first commit on this repo since Sept 2023...what are the odds
+    # that he would make a change to the data right when i am working off of it :) update below is to handle this change
+
+    # merge overview stats with master data to get Player1 and player 2 columns. This will reduce down the dataset to just
+    # the matches between player 1 and player 2 of interest as the df_match_charting_master is just between the 2 players of interest
+
+    df_match_charting_overview_stats = pd.merge(
+        df_match_charting_overview_stats, df_match_charting_master[['match_id', 'Player 1', 'Player 2']], on='match_id')
+
+    # Set the 'player_serve_order' column
+    def set_serve_order(row):
+        if row['player'] == row['Player 1']:
+            return 1
+        elif row['player'] == row['Player 2']:
+            return 2
+        else:
+            return None
+
+    # Set the serve order based on the player names
+    df_match_charting_overview_stats['player_serve_order'] = df_match_charting_overview_stats.apply(
+        set_serve_order, axis=1)
+
+    # Process the match charting overview stats data
+    df_match_charting_overview_stats_processed, df_match_charting_overview_stats_processed_pivot = process_match_charting_overview_stats(
+        df_match_charting_overview_stats)
+
+    # Merge some useful columns like winner_name, score etc from the atp_summary data with the match charting master data
+    df_match_charting_master_merged_with_atp_match_summary = merge_atp_match_summary_and_match_charting_master_data(
+        df_match_charting_master, df_concat_subset)
+
+    # Merge the match charting master data with the processed match charting overview stats data with the feature columns
+    df_merged_features_jumbled = merge_match_charting_feature_master_data(
+        df_match_charting_master_merged_with_atp_match_summary, df_match_charting_overview_stats_processed_pivot)
+
+    # Apply the function to create additional features
+    df_merged_features_jumbled_additional_features = create_additional_features(
+        df_merged_features_jumbled.copy())
+
+    # now align features with user_selected_player1 and user_selected_player2 instead of winner_loser
+    # this is to explore if feature importance is different for the 2 different players. Idea is to train the model only on the subset
+    # of features related to 1 player and see what are the features of importance for that player to win over the other player
+    # and vice versa
+    df_merged_features_aligned_user_selected_p1_p2 = align_features_with_selected_player_vs_rest_of_tour_and_create_target(
+        df_merged_features_jumbled_additional_features.copy(), user_selected_player)
+
+    # if any of the rows have winner_name as NaN, drop them. This happens in some corner cases like Davis Cup, Olympics when the tournament name and
+    # hence the custom_match_id column is not the same between the atp summary data and the match charting master data. For eg, in one file, tournament
+    # name is 'Olympics' while in the other it is 'London Olympics'. Dropping these rows is a shame as
+    # rest of the data is present. But for now, I am just dropping these rows. Dont want to spend time to create a work around.
+    df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_user_selected_p1_p2.dropna(subset=[
+        'winner_name'])
+
+    # Get final dataframe just with feature and target columns for training
+    df_final_for_training_user_selected_p1p2_feature_aligned = df_merged_features_aligned_user_selected_p1_p2[[
+        'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
+        f'{user_selected_player}_aces_perc', f'{user_selected_player}_dfs_perc', f'{user_selected_player}_first_in_perc', f'{user_selected_player}_first_won_perc', f'{user_selected_player}_second_won_perc',
+        f'{user_selected_player}_bp_saved_perc', f'{user_selected_player}_return_pts_won_perc', f'{user_selected_player}_winners_unforced_perc', f'{user_selected_player}_winner_fh_perc',
+        f'{user_selected_player}_winners_bh_perc', f'{user_selected_player}_unforced_fh_perc', f'{user_selected_player}_unforced_bh_perc',
+        'opponent_aces_perc', 'opponent_dfs_perc', 'opponent_first_in_perc', 'opponent_first_won_perc', 'opponent_second_won_perc',
+        'opponent_bp_saved_perc', 'opponent_return_pts_won_perc', 'opponent_winners_unforced_perc', 'opponent_winner_fh_perc',
+        'opponent_winners_bh_perc', 'opponent_unforced_fh_perc', 'opponent_unforced_bh_perc', f'target_{user_selected_player}_win', 'target_opponent_win'
+    ]]
+
+    return df_final_for_training_user_selected_p1p2_feature_aligned
+
+
+# %%
 @st.cache_data
 def load_data(user_selected_player, df_concat_subset):
     # this takes the most time. figure out ow to cache this
@@ -632,8 +847,6 @@ def load_data(user_selected_player, df_concat_subset):
     df_match_charting_master = get_match_charting_master_data(
         user_selected_player1, user_selected_player2)
 
-    df_charting_rally_stats = get_rally_stats_data(
-        user_selected_player1, user_selected_player2)
     df_match_charting_overview_stats = get_match_charting_overview_stats_data()
 
     # looks like Jeff Sackman recently changed the format of the overview stats. player column went from 1/2 (serve order) to
