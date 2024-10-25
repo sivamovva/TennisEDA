@@ -47,7 +47,7 @@ with st.spinner('Getting player list who have played at least 150 matches...'):
 # Get the list of players from the first column of the dataframe
 players = df_player_subset.iloc[:, 0].unique().tolist()
 
-with st.spinner('Loading player data. Will take a few seconds the first time...'):
+with st.spinner('Loading player data. Will take a few seconds. Thanks for your patience!...'):
     try:
         from tennis_eda_dataprocessing import (
             get_player_match_subset_against_tour
@@ -63,6 +63,25 @@ with st.spinner('Loading player data. Will take a few seconds the first time...'
 user_selected_player = st.selectbox(
     'Select a Player from drop down list below', players, index=None, placeholder='Select Player...'
 )
+
 if user_selected_player:
     df_concat_subset = get_player_match_subset_against_tour(
         user_selected_player)
+
+    # Artificial delay to simulate loading time
+
+    with st.spinner('Player win percentage by year...'):
+        try:
+            from tennis_eda_dataprocessing import (
+                get_win_rate_by_year
+                )   # noqa
+            df_concat_subset_grouped_by_year = get_win_rate_by_year(
+                df_concat_subset, user_selected_player)
+            from tennis_eda_plotting import plot_yearly_win_rate_trend  # noqa
+            plot_yearly_win_rate_trend(
+                df_concat_subset_grouped_by_year, user_selected_player)
+
+        except Exception as e:
+            st.error(
+                f"An error occurred while getting the player win percentage by year: {e}")
+            st.stop()

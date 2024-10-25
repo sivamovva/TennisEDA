@@ -118,11 +118,27 @@ def get_player_match_subset_against_tour(user_selected_player):
     ) * 100 / total_matches
     win_percentage = round(win_percentage)
 
-    # Write to Streamlit
-    st.write(f"{user_selected_player} played {total_matches} matches.")
-    st.write(f"Win percentage: {win_percentage}%")
+    # Create a binary column for the top winner
+    df_concat_subset[f'{user_selected_player}_wins'] = (
+        df_concat_subset['winner_name'] == user_selected_player).astype(int)
 
-    return df_concat_subset, win_percentage
+    # create a year column from the tourney_date column
+    df_concat_subset['year'] = df_concat_subset['tourney_date'].astype(
+        'str').str[:4]
+
+    # create unique match id column: concatenate year, tournament name, winner name and loser name (sorted alphabetically)
+    df_concat_subset['custom_match_id'] = df_concat_subset['year'] + '_' + df_concat_subset['tourney_name'] + '_' + \
+        df_concat_subset['round'] + '_' + df_concat_subset[['winner_name', 'loser_name']].apply(
+            lambda x: '_'.join(sorted(x)), axis=1)
+
+    # Convert the year column to int before getting the range
+    df_concat_subset['year'] = df_concat_subset['year'].astype(int)
+    year_range = f"{df_concat_subset['year'].min()}-{df_concat_subset['year'].max()}"
+
+    # Write to Streamlit
+    st.write(f"{user_selected_player} played {total_matches} matches in the time period {year_range}, with a Career Avg Win percentage of {win_percentage}%")
+
+    return df_concat_subset
 
 
 # %%
@@ -163,28 +179,30 @@ def get_player_match_subset(user_selected_player1, user_selected_player2):
 # %%
 
 
-def get_win_rate_by_year(df_concat_subset, user_selected_player1, user_selected_player2, top_winner):
-    # Check if there are at least 20 matches
-    if len(df_concat_subset) >= 20:
-        # group by year and get the mean of the 'Novak_Wins' column and number of rows in each year
-        df_concat_subset_grouped_by_year = df_concat_subset.groupby('year').agg({
-            f'{top_winner}_wins': 'mean',
-            'tourney_date': 'size'
-        }).reset_index()
-        df_concat_subset_grouped_by_year[f'{top_winner}_wins'] = df_concat_subset_grouped_by_year[f'{top_winner}_wins'] * 100
+def get_win_rate_by_year(df_concat_subset, user_selected_player):
 
-        # Rename the 'tourney_date' column to 'match_count' for clarity
-        df_concat_subset_grouped_by_year.rename(
-            columns={'tourney_date': 'Number_of_Matches_Played', f'{top_winner}_wins': f'{top_winner}_win_percentage'}, inplace=True)
+    # make sure year column is of type object
+    df_concat_subset['year'] = df_concat_subset['year'].astype('str')
 
-        # reorder columns
-        df_concat_subset_grouped_by_year = df_concat_subset_grouped_by_year[[
-            'year', 'Number_of_Matches_Played', f'{top_winner}_win_percentage']]
+    # group by year and get the mean of the 'Novak_Wins' column and number of rows in each year
+    df_concat_subset_grouped_by_year = df_concat_subset.groupby('year').agg({
+        f'{user_selected_player}_wins': 'mean',
+        'tourney_date': 'size'
+    }).reset_index()
+    df_concat_subset_grouped_by_year[f'{user_selected_player}_wins'] = df_concat_subset_grouped_by_year[f'{user_selected_player}_wins'] * 100
 
-        df_concat_subset_grouped_by_year.to_csv(
-            f'selected_matchup_win_rate_by_year.csv', index=False)
+    # Rename the 'tourney_date' column to 'match_count' for clarity
+    df_concat_subset_grouped_by_year.rename(
+        columns={'tourney_date': 'Number_of_Matches_Played', f'{user_selected_player}_wins': f'{user_selected_player}_win_percentage'}, inplace=True)
 
-        return df_concat_subset_grouped_by_year
+    # reorder columns
+    df_concat_subset_grouped_by_year = df_concat_subset_grouped_by_year[[
+        'year', 'Number_of_Matches_Played', f'{user_selected_player}_win_percentage']]
+
+    df_concat_subset_grouped_by_year.to_csv(
+        f'selected_matchup_win_rate_by_year.csv', index=False)
+
+    return df_concat_subset_grouped_by_year
 
 # %%
 # get the match charting master data for the specified players
@@ -603,37 +621,12 @@ def get_feature_importance_xgboost(X, y):
 # %%
 
 @st.cache_data
-def load_data(user_selected_player1, user_selected_player2):
+def load_data(user_selected_player, df_concat_subset):
     # this takes the most time. figure out ow to cache this
-    df_concat_subset, top_winner = get_player_match_subset(
-        user_selected_player1, user_selected_player2)
 
-    # Get the length of the dataframe
-    num_matches = len(df_concat_subset)
-
-    # Display the number of matches and the top winner
-    st.write(
-        f"Found {num_matches} matches between {user_selected_player1} and {user_selected_player2}")
-    # Get the H2H record of the top winner
-    h2h_record = df_concat_subset['winner_name'].value_counts()
-    top_winner_wins = h2h_record.get(top_winner, 0)
-    top_loser_wins = h2h_record.get(
-        user_selected_player1 if top_winner == user_selected_player2 else user_selected_player2, 0)
-
-    # Display the H2H record
-    st.write(
-        f"{top_winner} leads the H2H record {top_winner_wins}-{top_loser_wins}")
-
-    # display the atp match summary data
-    df_concat_subset = df_concat_subset.reset_index(drop=True)
-    df_concat_subset.index += 1
-    st.write(df_concat_subset[['year', 'tourney_name', 'round', 'winner_name', 'loser_name',
-                               'score', 'winner_rank', 'loser_rank']])
-
-    # If more than 20 matches, get yearly summary
-    if len(df_concat_subset) >= 20:
-        df_concat_subset_grouped_by_year = get_win_rate_by_year(
-            df_concat_subset, user_selected_player1, user_selected_player2, top_winner)
+    # get yearly summary
+    df_concat_subset_grouped_by_year = get_win_rate_by_year(
+        df_concat_subset, user_selected_player)
 
     # Get match charting master file
     df_match_charting_master = get_match_charting_master_data(
@@ -725,3 +718,6 @@ def load_data(user_selected_player1, user_selected_player2):
     ]]
 
     return df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned
+
+# %%
+# process data function
