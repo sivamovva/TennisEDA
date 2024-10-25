@@ -4,7 +4,17 @@ import streamlit as st  # noqa
 
 # %%
 # Use the full width of the page
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Pro Tennis Analysis",
+    page_icon="🎾",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://www.example.com/help',
+        'Report a bug': 'https://www.example.com/bug',
+        'About': 'This is an app for Pro Tennis Analysis.'
+    }
+)
 
 
 # %%
@@ -37,28 +47,22 @@ with st.spinner('Getting player list who have played at least 150 matches...'):
 # Get the list of players from the first column of the dataframe
 players = df_player_subset.iloc[:, 0].unique().tolist()
 
-
-# Add a text input for player search
-player_search = st.text_input(
-    'Type in a player name you are interested in here to get a filtered down list of options below', '')
-
-# Filter players based on search input
-filtered_players = [
-    player for player in players if player_search.lower() in player.lower()]
-
-# Dropdown menu for selecting a player with filtered options
-user_selected_player = st.selectbox(
-    'Or Select Player directly here (warning: Long list !)', filtered_players, index=0 if filtered_players else -1)
-
-with st.spinner('Getting player match subset...'):
+with st.spinner('Loading player data. Will take a few seconds the first time...'):
     try:
         from tennis_eda_dataprocessing import (
             get_player_match_subset_against_tour
             )   # noqa
-        df_concat_subset = get_player_match_subset_against_tour(
-            user_selected_player)
 
     except Exception as e:
         st.error(
             f"An error occurred while getting the player match subset: {e}")
         st.stop()
+
+
+# Dropdown menu with search option for selecting a player
+user_selected_player = st.selectbox(
+    'Select a Player from drop down list below', players, index=None, placeholder='Select Player...'
+)
+if user_selected_player:
+    df_concat_subset = get_player_match_subset_against_tour(
+        user_selected_player)
