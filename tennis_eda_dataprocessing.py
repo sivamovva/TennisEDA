@@ -102,7 +102,7 @@ concatenate_and_save_match_summaries()
 # %%
 
 
-@st.cache
+@st.cache_data
 def get_player_match_subset_against_tour(user_selected_player):
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
     # Read the master parquet file
@@ -601,6 +601,8 @@ def get_feature_importance_xgboost(X, y):
 
 
 # %%
+
+@st.cache_data
 def load_data(user_selected_player1, user_selected_player2):
     # this takes the most time. figure out ow to cache this
     df_concat_subset, top_winner = get_player_match_subset(
