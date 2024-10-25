@@ -228,12 +228,8 @@ def get_match_charting_overview_stats_against_tour(user_selected_player):
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
 
-    # Get the subset of matches where the selected player is either Player 1 or Player 2
-    df_concat_subset = df_concat.query(
-        '`Player 1` == @user_selected_player or `Player 2` == @user_selected_player')
-
     # return the match charting overview stats data for the selected player
-    return df_concat_subset
+    return df_concat
 
 # %%
 # Read the concatenated master file from the repo
@@ -772,7 +768,7 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
     # that he would make a change to the data right when i am working off of it :) update below is to handle this change
 
     # merge overview stats with master data to get Player1 and player 2 columns. This will reduce down the dataset to just
-    # the matches between player 1 and player 2 of interest as the df_match_charting_master is just between the 2 players of interest
+    # the matches involving player of interest as the df_match_charting_master is just between the 2 players of interest
 
     df_match_charting_overview_stats = pd.merge(
         df_match_charting_overview_stats, df_match_charting_master[['match_id', 'Player 1', 'Player 2']], on='match_id')
@@ -835,6 +831,7 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
 
 
 # %%
+"""
 @st.cache_data
 def load_data(user_selected_player, df_concat_subset):
     # this takes the most time. figure out ow to cache this
@@ -931,6 +928,6 @@ def load_data(user_selected_player, df_concat_subset):
     ]]
 
     return df_concat_subset, df_final_for_training_winner_loser_feature_aligned, df_final_for_training_user_selected_p1p2_feature_aligned
-
+"""
 # %%
 # process data function
