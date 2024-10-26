@@ -645,7 +645,7 @@ def align_features_with_selected_player_vs_rest_of_tour_and_create_target(df, us
     ]
 
     player_independent_feature_columns = [
-        'winner_loser_rank_diff', 'tight_match']
+        'winner_loser_rank_diff', 'tight_match', 'Surface']
 
     # Iterate through each row in the DataFrame
     for index, row in df.iterrows():
@@ -816,9 +816,18 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
     df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_user_selected_p1_p2.dropna(subset=[
         'winner_name'])
 
+    # one hot encoding of the Surface feature.
+    df_merged_features_aligned_user_selected_p1_p2 = pd.get_dummies(
+        df_merged_features_aligned_user_selected_p1_p2, columns=['Surface'])
+
+    # Convert True/False to 1/0
+    df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_user_selected_p1_p2.map(
+        lambda x: 1 if x is True else (0 if x is False else x))
+
     # Get final dataframe just with feature and target columns for training
     df_final_for_training_user_selected_p1p2_feature_aligned = df_merged_features_aligned_user_selected_p1_p2[[
-        'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff',
+        'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff', 'Surface_Clay',
+        'Surface_Grass', 'Surface_Hard',
         f'{user_selected_player}_aces_perc', f'{user_selected_player}_dfs_perc', f'{user_selected_player}_first_in_perc', f'{user_selected_player}_first_won_perc', f'{user_selected_player}_second_won_perc',
         f'{user_selected_player}_bp_saved_perc', f'{user_selected_player}_return_pts_won_perc', f'{user_selected_player}_winners_unforced_perc', f'{user_selected_player}_winner_fh_perc',
         f'{user_selected_player}_winners_bh_perc', f'{user_selected_player}_unforced_fh_perc', f'{user_selected_player}_unforced_bh_perc',
