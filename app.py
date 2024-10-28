@@ -112,8 +112,7 @@ if user_selected_player:
         try:
             X1 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
                 columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
-                         'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
-                         'opponent_aces_perc', 'opponent_dfs_perc', 'opponent_first_in_perc',
+                         'match_id', 'custom_match_id', 'year', 'winner_name', 'opponent_aces_perc', 'opponent_dfs_perc', 'opponent_first_in_perc',
                          'opponent_first_won_perc', 'opponent_second_won_perc', 'opponent_bp_saved_perc',
                          'opponent_return_pts_won_perc', 'opponent_winners_unforced_perc', 'opponent_winner_fh_perc',
                          'opponent_winners_bh_perc', 'opponent_unforced_fh_perc', 'opponent_unforced_bh_perc'
@@ -146,7 +145,7 @@ if user_selected_player:
                 f'XGBoost Feature Importance specific to opponent win')
             X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
                 columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
-                         'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2',
+                         'match_id', 'custom_match_id', 'year', 'winner_name',
                          f'{user_selected_player}_aces_perc', f'{user_selected_player}_dfs_perc', f'{user_selected_player}_first_in_perc',
                          f'{user_selected_player}_first_won_perc', f'{user_selected_player}_second_won_perc', f'{user_selected_player}_bp_saved_perc',
                          f'{user_selected_player}_return_pts_won_perc', f'{user_selected_player}_winners_unforced_perc', f'{user_selected_player}_winner_fh_perc',

@@ -820,17 +820,19 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
     df_merged_features_aligned_user_selected_p1_p2 = df_merged_features_aligned_user_selected_p1_p2.map(
         lambda x: 1 if x is True else (0 if x is False else x))
 
-    # Get final dataframe just with feature and target columns for training
-    df_final_for_training_user_selected_p1p2_feature_aligned = df_merged_features_aligned_user_selected_p1_p2[[
-        'match_id', 'winner_name', 'loser_name', 'Player 1', 'Player 2', 'tight_match', 'winner_loser_rank_diff', 'Surface_Clay',
-        'Surface_Grass', 'Surface_Hard',
-        f'{user_selected_player}_aces_perc', f'{user_selected_player}_dfs_perc', f'{user_selected_player}_first_in_perc', f'{user_selected_player}_first_won_perc', f'{user_selected_player}_second_won_perc',
-        f'{user_selected_player}_bp_saved_perc', f'{user_selected_player}_return_pts_won_perc', f'{user_selected_player}_winners_unforced_perc', f'{user_selected_player}_winner_fh_perc',
-        f'{user_selected_player}_winners_bh_perc', f'{user_selected_player}_unforced_fh_perc', f'{user_selected_player}_unforced_bh_perc',
-        'opponent_aces_perc', 'opponent_dfs_perc', 'opponent_first_in_perc', 'opponent_first_won_perc', 'opponent_second_won_perc',
-        'opponent_bp_saved_perc', 'opponent_return_pts_won_perc', 'opponent_winners_unforced_perc', 'opponent_winner_fh_perc',
-        'opponent_winners_bh_perc', 'opponent_unforced_fh_perc', 'opponent_unforced_bh_perc', f'target_{user_selected_player}_win', 'target_opponent_win'
-    ]]
+    # getting final dataframe with feature and target columns - dropping unncessary cols.
+    df_final_for_training_user_selected_p1p2_feature_aligned = df_merged_features_aligned_user_selected_p1_p2.drop(
+        columns=['Player 1', 'Player 2', 'Pl 1 hand', 'Pl 2 hand', 'Date', 'Tournament', 'Round', 'Time', 'Court', 'Umpire', 'Best of',
+                 'Final TB?', 'Charted by', 'winner_age', 'winner_seed', 'winner_rank', 'loser_name', 'loser_age',
+                 'loser_seed', 'loser_rank', 'score', 'p1_serve_pts', 'p2_serve_pts',
+                 'p1_aces', 'p2_aces', 'p1_dfs', 'p2_dfs', 'p1_first_in', 'p2_first_in',
+                 'p1_first_won', 'p2_first_won', 'p1_second_in', 'p2_second_in',
+                 'p1_second_won', 'p2_second_won', 'p1_bk_pts', 'p2_bk_pts',
+                 'p1_bp_saved', 'p2_bp_saved', 'p1_return_pts', 'p2_return_pts',
+                 'p1_return_pts_won', 'p2_return_pts_won', 'p1_winners', 'p2_winners',
+                 'p1_winners_fh', 'p2_winners_fh', 'p1_winners_bh', 'p2_winners_bh',
+                 'p1_unforced', 'p2_unforced', 'p1_unforced_fh', 'p2_unforced_fh',
+                 'p1_unforced_bh', 'p2_unforced_bh', 'sets_played'])
 
     return df_final_for_training_user_selected_p1p2_feature_aligned
 
