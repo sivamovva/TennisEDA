@@ -237,8 +237,8 @@ concatenate_and_save_match_charting_overview_stats('wta')
 
 
 @ st.cache_data
-def get_player_match_subset_against_tour(user_selected_player):
-    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
+def get_player_match_subset_against_tour(user_selected_player, user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_matches_master.parquet'
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
 
@@ -278,8 +278,8 @@ def get_player_match_subset_against_tour(user_selected_player):
 
 
 @ st.cache_data
-def get_match_charting_master_against_tour(user_selected_player):
-    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_master_data.parquet'
+def get_match_charting_master_against_tour(user_selected_player, user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_match_charting_master_data.parquet'
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
 
@@ -293,8 +293,8 @@ def get_match_charting_master_against_tour(user_selected_player):
 
 
 @ st.cache_data
-def get_match_charting_overview_stats_against_tour():
-    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_overview_stats.parquet'
+def get_match_charting_overview_stats_against_tour(user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_match_charting_overview_stats.parquet'
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
 
@@ -418,7 +418,7 @@ def merge_match_charting_feature_master_data(df_match_charting_master, df_match_
 
 def merge_atp_match_summary_and_match_charting_master_data(df_match_charting_master, df_concat_subset):
     # merge the match charting master data with the atp match summary data
-    df_merged = pd.merge(df_match_charting_master, df_concat_subset[['custom_match_id', 'winner_name', 'winner_age', 'winner_seed', 'winner_rank', 'loser_name', 'loser_age', 'loser_seed', 'loser_rank', 'score']],
+    df_merged = pd.merge(df_match_charting_master, df_concat_subset[['custom_match_id', 'winner_name', 'winner_age', 'winner_rank', 'loser_name', 'loser_age', 'loser_rank', 'score']],
                          how='left', left_on='custom_match_id', right_on='custom_match_id')
 
     return df_merged
@@ -569,13 +569,14 @@ def get_feature_importance_xgboost(X, y):
 
 # %%
 @ st.cache_data
-def load_data_selected_player_against_tour(user_selected_player, df_concat_subset):
+def load_data_selected_player_against_tour(user_selected_player, user_selected_tour, df_concat_subset):
     # get match charting master data for the selected player
     df_match_charting_master = get_match_charting_master_against_tour(
-        user_selected_player)
+        user_selected_player, user_selected_tour)
 
     # get match charting overview stats data - this is master file for all players, small enough, so i am not filtering it down
-    df_match_charting_overview_stats = get_match_charting_overview_stats_against_tour()
+    df_match_charting_overview_stats = get_match_charting_overview_stats_against_tour(
+        user_selected_tour)
 
     # looks like Jeff Sackman recently changed the format of the overview stats. player column went from 1/2 (serve order) to
     # actual player names, this happened on Oct 18th, 2024 - his first commit on this repo since Sept 2023...what are the odds
@@ -641,8 +642,8 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
     # getting final dataframe with feature and target columns - dropping unncessary cols.
     df_final_for_training_user_selected_p1p2_feature_aligned = df_merged_features_aligned_user_selected_p1_p2.drop(
         columns=['Player 1', 'Player 2', 'Pl 1 hand', 'Pl 2 hand', 'Date', 'Tournament', 'Round', 'Time', 'Court', 'Umpire', 'Best of',
-                 'Final TB?', 'Charted by', 'winner_age', 'winner_seed', 'winner_rank', 'loser_name', 'loser_age',
-                 'loser_seed', 'loser_rank', 'score', 'p1_serve_pts', 'p2_serve_pts',
+                 'Final TB?', 'Charted by', 'winner_age', 'winner_rank', 'loser_name', 'loser_age',
+                 'loser_rank', 'score', 'p1_serve_pts', 'p2_serve_pts',
                  'p1_aces', 'p2_aces', 'p1_dfs', 'p2_dfs', 'p1_first_in', 'p2_first_in',
                  'p1_first_won', 'p2_first_won', 'p1_second_in', 'p2_second_in',
                  'p1_second_won', 'p2_second_won', 'p1_bk_pts', 'p2_bk_pts',
@@ -653,3 +654,5 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
                  'p1_unforced_bh', 'p2_unforced_bh', 'sets_played'])
 
     return df_final_for_training_user_selected_p1p2_feature_aligned
+
+# %%
