@@ -223,7 +223,7 @@ def get_match_charting_master_against_tour(user_selected_player):
 
 
 @st.cache_data
-def get_match_charting_overview_stats_against_tour(user_selected_player):
+def get_match_charting_overview_stats_against_tour():
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_overview_stats.parquet'
     # Read the master parquet file
     df_concat = pd.read_parquet(master_file_url)
@@ -756,9 +756,8 @@ def load_data_selected_player_against_tour(user_selected_player, df_concat_subse
     df_match_charting_master = get_match_charting_master_against_tour(
         user_selected_player)
 
-    # get match charting overview stats data for the selected player
-    df_match_charting_overview_stats = get_match_charting_overview_stats_against_tour(
-        user_selected_player)
+    # get match charting overview stats data - this is master file for all players, small enough, so i am not filtering it down
+    df_match_charting_overview_stats = get_match_charting_overview_stats_against_tour()
 
     # looks like Jeff Sackman recently changed the format of the overview stats. player column went from 1/2 (serve order) to
     # actual player names, this happened on Oct 18th, 2024 - his first commit on this repo since Sept 2023...what are the odds
