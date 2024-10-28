@@ -126,66 +126,68 @@ if user_selected_tour:
             [f'Factors specific to {user_selected_player} win',
              'Factors specific to opponent win'
              ])
+        with st.spinner('Training on data to learn patterns...'):
+            with tab1:
 
-        with tab1:
-            st.header(f"Factors important for {user_selected_player} win")
-            try:
-                X1 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
-                    columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
-                             'match_id', 'custom_match_id', 'year', 'winner_name', 'opponent_aces_perc', 'opponent_dfs_perc', 'opponent_first_in_perc',
-                             'opponent_first_won_perc', 'opponent_second_won_perc', 'opponent_bp_saved_perc',
-                             'opponent_return_pts_won_perc', 'opponent_winners_unforced_perc', 'opponent_winner_fh_perc',
-                             'opponent_winners_bh_perc', 'opponent_unforced_fh_perc', 'opponent_unforced_bh_perc'
-                             ])
+                st.header(f"Factors important for {user_selected_player} win")
+                try:
+                    X1 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
+                        columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
+                                 'match_id', 'custom_match_id', 'year', 'winner_name', 'opponent_aces_perc', 'opponent_dfs_perc', 'opponent_first_in_perc',
+                                 'opponent_first_won_perc', 'opponent_second_won_perc', 'opponent_bp_saved_perc',
+                                 'opponent_return_pts_won_perc', 'opponent_winners_unforced_perc', 'opponent_winner_fh_perc',
+                                 'opponent_winners_bh_perc', 'opponent_unforced_fh_perc', 'opponent_unforced_bh_perc'
+                                 ])
 
-                y1 = df_final_for_training_user_selected_p1p2_feature_aligned[
-                    f'target_{user_selected_player}_win']
+                    y1 = df_final_for_training_user_selected_p1p2_feature_aligned[
+                        f'target_{user_selected_player}_win']
 
-                from tennis_eda_dataprocessing import get_feature_importance_xgboost  # noqa
+                    from tennis_eda_dataprocessing import get_feature_importance_xgboost  # noqa
 
-                model_xgb1, feature_importance_df_xgb1 = get_feature_importance_xgboost(
-                    X1, y1)
+                    model_xgb1, feature_importance_df_xgb1 = get_feature_importance_xgboost(
+                        X1, y1)
 
-                top_features_xgb1 = feature_importance_df_xgb1.head(5)
-                top_features_xgb1 = top_features_xgb1.sort_values(
-                    by='Importance', ascending=False)
-                top_features_xgb1 = top_features_xgb1.iloc[::-1]
-                import plotly.express as px  # noqa
-                fig_xgb1 = px.bar(top_features_xgb1, x='Importance', y='Feature',
-                                  orientation='h', title='Top 5 Feature Importances (XGBoost)')
-                st.plotly_chart(fig_xgb1, key='fig_xgb1')
-            except Exception as e:
-                st.error(
-                    f"An error occurred while getting the factors for win: {e}")
+                    top_features_xgb1 = feature_importance_df_xgb1.head(5)
+                    top_features_xgb1 = top_features_xgb1.sort_values(
+                        by='Importance', ascending=False)
+                    top_features_xgb1 = top_features_xgb1.iloc[::-1]
+                    import plotly.express as px  # noqa
+                    fig_xgb1 = px.bar(top_features_xgb1, x='Importance', y='Feature',
+                                      orientation='h', title='Top 5 Feature Importances (XGBoost)')
+                    st.plotly_chart(fig_xgb1, key='fig_xgb1')
+                except Exception as e:
+                    st.error(
+                        f"An error occurred while getting the factors for win: {e}")
 
-        with tab2:
-            st.header(f"Factors important for opponent win")
-            try:
-                st.header(
-                    f'XGBoost Feature Importance specific to opponent win')
-                X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
-                    columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
-                             'match_id', 'custom_match_id', 'year', 'winner_name',
-                             f'{user_selected_player}_aces_perc', f'{user_selected_player}_dfs_perc', f'{user_selected_player}_first_in_perc',
-                             f'{user_selected_player}_first_won_perc', f'{user_selected_player}_second_won_perc', f'{user_selected_player}_bp_saved_perc',
-                             f'{user_selected_player}_return_pts_won_perc', f'{user_selected_player}_winners_unforced_perc', f'{user_selected_player}_winner_fh_perc',
-                             f'{user_selected_player}_winners_bh_perc', f'{user_selected_player}_unforced_fh_perc', f'{user_selected_player}_unforced_bh_perc'
-                             ])
+            with tab2:
+                st.header(f"Factors important for opponent win")
+                try:
+                    st.header(
+                        f'XGBoost Feature Importance specific to opponent win')
+                    X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
+                        columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
+                                 'match_id', 'custom_match_id', 'year', 'winner_name',
+                                 f'{user_selected_player}_aces_perc', f'{user_selected_player}_dfs_perc', f'{user_selected_player}_first_in_perc',
+                                 f'{user_selected_player}_first_won_perc', f'{user_selected_player}_second_won_perc', f'{user_selected_player}_bp_saved_perc',
+                                 f'{user_selected_player}_return_pts_won_perc', f'{user_selected_player}_winners_unforced_perc', f'{user_selected_player}_winner_fh_perc',
+                                 f'{user_selected_player}_winners_bh_perc', f'{user_selected_player}_unforced_fh_perc', f'{user_selected_player}_unforced_bh_perc'
+                                 ])
 
-                y2 = df_final_for_training_user_selected_p1p2_feature_aligned[
-                    'target_opponent_win']
+                    y2 = df_final_for_training_user_selected_p1p2_feature_aligned[
+                        'target_opponent_win']
 
-                model_xgb2, feature_importance_df_xgb2 = get_feature_importance_xgboost(
-                    X2, y2)
+                    model_xgb2, feature_importance_df_xgb2 = get_feature_importance_xgboost(
+                        X2, y2)
 
-                top_features_xgb2 = feature_importance_df_xgb2.head(5)
-                top_features_xgb2 = top_features_xgb2.sort_values(
-                    by='Importance', ascending=False)
-                top_features_xgb2 = top_features_xgb2.iloc[::-1]
-                fig_xgb2 = px.bar(top_features_xgb2, x='Importance', y='Feature',
-                                  orientation='h', title='Top 5 Feature Importances (XGBoost)')
-                st.plotly_chart(fig_xgb2, key='fig_xgb2')
+                    top_features_xgb2 = feature_importance_df_xgb2.head(5)
+                    top_features_xgb2 = top_features_xgb2.sort_values(
+                        by='Importance', ascending=False)
+                    top_features_xgb2 = top_features_xgb2.iloc[::-1]
+                    fig_xgb2 = px.bar(top_features_xgb2, x='Importance', y='Feature',
+                                      orientation='h', title='Top 5 Feature Importances (XGBoost)')
+                    st.plotly_chart(fig_xgb2, key='fig_xgb2')
 
-            except Exception as e:
-                st.error(
-                    f"An error occurred while getting the factors for opponent win: {e}")
+                except Exception as e:
+                    st.error(
+                        f"An error occurred while getting the factors for opponent win: {e}")
+        st.stop()
