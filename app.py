@@ -91,8 +91,13 @@ if user_selected_player:
                 )   # noqa
             df_final_for_training_user_selected_p1p2_feature_aligned = load_data_selected_player_against_tour(
                 user_selected_player, df_concat_subset)
-            st.write(
-                df_final_for_training_user_selected_p1p2_feature_aligned.head())
+
+            if df_final_for_training_user_selected_p1p2_feature_aligned.shape[0] > 100:
+                st.write(
+                    f'Found {df_final_for_training_user_selected_p1p2_feature_aligned.shape[0]} matches with detailed stats for {user_selected_player}. This is a good number of matches to learn their play patterns against rest of the tour')
+            else:
+                st.write(
+                    f'Found just {df_final_for_training_user_selected_p1p2_feature_aligned.shape[0]} matches with detailed stats for {user_selected_player}. May not be enough to learn their patterns against rest of the tour')
 
         except Exception as e:
             st.error(

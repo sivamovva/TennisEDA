@@ -15,7 +15,8 @@ from xgboost import XGBClassifier
 # %%
 # Replace with your GitHub repository details
 data_source_user = 'JeffSackmann'
-data_source_repo_match_summaries = 'tennis_atp'
+data_source_repo_match_summaries_atp = 'tennis_atp'
+data_source_repo_match_summaries_wta = 'tennis_wta'
 data_source_repo_match_point_by_point = 'tennis_MatchChartingProject'
 data_source_branch = 'master'
 
@@ -25,7 +26,7 @@ my_branch = 'main'
 
 
 # List of CSV file paths in the repository that i am interested in
-csv_files_match_summary = [
+csv_files_match_summary_atp = [
     'atp_matches_1990.csv', 'atp_matches_1991.csv', 'atp_matches_1992.csv',
     'atp_matches_1993.csv', 'atp_matches_1994.csv', 'atp_matches_1995.csv',
     'atp_matches_1996.csv', 'atp_matches_1997.csv', 'atp_matches_1998.csv',
@@ -40,34 +41,76 @@ csv_files_match_summary = [
 
 ]
 
+csv_files_match_summary_wta = ['wta_matches_1990.csv', 'wta_matches_1991.csv', 'wta_matches_1992.csv',
+                               'wta_matches_1993.csv', 'wta_matches_1994.csv', 'wta_matches_1995.csv',
+                               'wta_matches_1996.csv', 'wta_matches_1997.csv', 'wta_matches_1998.csv',
+                               'wta_matches_1999.csv', 'wta_matches_2000.csv', 'wta_matches_2001.csv',
+                               'wta_matches_2002.csv', 'wta_matches_2003.csv', 'wta_matches_2004.csv',
+                               'wta_matches_2005.csv', 'wta_matches_2006.csv', 'wta_matches_2007.csv',
+                               'wta_matches_2008.csv', 'wta_matches_2009.csv', 'wta_matches_2010.csv', 'wta_matches_2011.csv',
+                               'wta_matches_2012.csv', 'wta_matches_2013.csv', 'wta_matches_2014.csv',
+                               'wta_matches_2015.csv', 'wta_matches_2016.csv', 'wta_matches_2017.csv',
+                               'wta_matches_2018.csv', 'wta_matches_2019.csv', 'wta_matches_2020.csv',
+                               'wta_matches_2021.csv', 'wta_matches_2022.csv', 'wta_matches_2023.csv',
+                               ]
+
 # %%
 # list of CSV files in the match charting project repo. There is a women's file as well here but am only including the men's files for now.
-match_charting_master = ['charting-m-matches.csv']
-match_charting_rally_stats = [
+match_charting_master_atp = ['charting-m-matches.csv']
+match_charting_master_wta = ['charting-w-matches.csv']
+
+match_charting_rally_stats_atp = [
     'charting-m-stats-Rally.csv']
-match_charting_return_outcomes = [
+match_charting_rally_stats_wta = ['charting-w-stats-Rally.csv']
+
+match_charting_return_outcomes_atp = [
     'charting-m-stats-ReturnOutcomes.csv']
-match_charting_overview_stats = ['charting-m-stats-Overview.csv']
-match_charting_return_depth = ['charting-m-stats-ReturnDepth.csv']
-match_sharting_short_direction_outcomes = [
+match_charting_return_outcomes_wta = ['charting-w-stats-ReturnOutcomes.csv']
+
+match_charting_overview_stats_atp = ['charting-m-stats-Overview.csv']
+match_charting_overview_stats_wta = ['charting-w-stats-Overview.csv']
+
+match_charting_return_depth_atp = ['charting-m-stats-ReturnDepth.csv']
+match_charting_return_depth_wta = ['charting-w-stats-ReturnDepth.csv']
+
+match_sharting_short_direction_outcomes_atp = [
     'charting-m-stats-ShotDirOutcomes.csv']
-match_charting_keypts_return = ['charting-m-stats-KeyPointsReturn.csv']
-match_charting_keypts_serve = ['charting-m-stats-KeyPointsServe.csv']
+match_sharting_short_direction_outcomes_wta = [
+    'charting-w-stats-ShotDirOutcomes.csv']
+
+match_charting_keypts_return_atp = ['charting-m-stats-KeyPointsReturn.csv']
+match_charting_keypts_return_wta = ['charting-w-stats-KeyPointsReturn.csv']
+
+match_charting_keypts_serve_atp = ['charting-m-stats-KeyPointsServe.csv']
+match_charting_keypts_serve_wta = ['charting-w-stats-KeyPointsServe.csv']
 
 
 # Base URL for the raw content of the CSV files
-csv_base_url_match_summary = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_summaries}/{data_source_branch}/'
+csv_base_url_match_summary_atp = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_summaries_atp}/{data_source_branch}/'
+csv_base_url_match_summary_wta = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_summaries_wta}/{data_source_branch}/'
+
 csv_base_url_match_charting = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_point_by_point}/{data_source_branch}/'
 
 # url for concatenated master file parquet data. This is the file that i created by concatenating all the match summary files
-atp_match_summary_masterfile = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/'
+atp_or_wta_match_summary_masterfile = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/'
 
 
 # %%
 # Function to concatenate all match summary CSV files and save as a parquet file
-def concatenate_and_save_match_summaries():
+def concatenate_and_save_match_summaries(tour):
+
     dfs = []
 
+    if tour == 'atp':
+        csv_files_match_summary = csv_files_match_summary_atp
+        csv_base_url_match_summary = csv_base_url_match_summary_atp
+    elif tour == 'wta':
+        csv_files_match_summary = csv_files_match_summary_wta
+        csv_base_url_match_summary = csv_base_url_match_summary_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
+
+        # for ATP
     for csv_file in csv_files_match_summary:
         url = csv_base_url_match_summary + csv_file
         response = requests.get(url)
@@ -81,8 +124,14 @@ def concatenate_and_save_match_summaries():
     # Concatenate all data into one DataFrame
     df_concat = pd.concat(dfs, ignore_index=True)
 
+    # drop unncessary columns
+    df_concat = df_concat.drop(columns=['tourney_level', 'match_num',
+                                        'winner_id', 'winner_seed', 'winner_entry', 'winner_ht', 'winner_ioc',
+                                        'loser_id', 'loser_seed', 'loser_entry', 'loser_ht', 'loser_ioc',
+                                        'winner_rank_points', 'loser_rank_points'])
+
     # Save the concatenated DataFrame as a parquet file
-    df_concat.to_parquet('atp_matches_master.parquet', index=False)
+    df_concat.to_parquet(f'{tour}_matches_master.parquet', index=False)
 
     # get all the players involved in the matches
     all_players = pd.concat(
@@ -93,14 +142,22 @@ def concatenate_and_save_match_summaries():
     # get subset of players who have played at least 150 matches on tour
     player_subset = player_match_counts.query('match_count >= 150')
     # save this to a parquet file
-    player_subset.to_parquet('player_subset.parquet', index=False)
+    player_subset.to_parquet(f'{tour}_player_subset.parquet', index=False)
+
 
 # %%
 # concatenate and save match_charting_master_data as a parquet file
 
 
-def concatenate_and_save_match_charting_master_data():
+def concatenate_and_save_match_charting_master_data(tour):
     dfs = []
+    if tour == 'atp':
+        match_charting_master = match_charting_master_atp
+
+    elif tour == 'wta':
+        match_charting_master = match_charting_master_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
 
     for csv_file in match_charting_master:
         url = csv_base_url_match_charting + csv_file
@@ -124,14 +181,22 @@ def concatenate_and_save_match_charting_master_data():
         df_concat['Round'] + '_' + df_concat[['Player 1', 'Player 2']].apply(
             lambda x: '_'.join(sorted(x)), axis=1)
 
-    df_concat.to_parquet('match_charting_master_data.parquet', index=False)
+    df_concat.to_parquet(
+        f'{tour}_match_charting_master_data.parquet', index=False)
 
 # %%
 # define function to concatenate and save match charting overview stats as a parquet file
 
 
-def concatenate_and_save_match_charting_overview_stats():
+def concatenate_and_save_match_charting_overview_stats(tour):
     dfs = []
+    if tour == 'atp':
+        match_charting_overview_stats = match_charting_overview_stats_atp
+
+    elif tour == 'wta':
+        match_charting_overview_stats = match_charting_overview_stats_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
 
     for csv_file in match_charting_overview_stats:
         url = csv_base_url_match_charting + csv_file
@@ -150,23 +215,28 @@ def concatenate_and_save_match_charting_overview_stats():
     # Keep only rows where 'set' column is 'Total'
     df_concat = df_concat[df_concat['set'] == 'Total']
 
-    df_concat.to_parquet('match_charting_overview_stats.parquet', index=False)
+    df_concat.to_parquet(
+        f'{tour}_match_charting_overview_stats.parquet', index=False)
 
 
 # %%
-# Call the function to concatenate and save the match summaries
-concatenate_and_save_match_summaries()
+# Call the function to concatenate and save the match summaries for both the tours. Note, this
+# call wont happen everytime the app loads. This is run offline and the parquet files are saved in the repo
+concatenate_and_save_match_summaries('atp')
+concatenate_and_save_match_summaries('wta')
 # %%
 # Call the function to concatenate and save the match charting master data
-concatenate_and_save_match_charting_master_data()
+concatenate_and_save_match_charting_master_data('atp')
+concatenate_and_save_match_charting_master_data('wta')
 # %%
 # Call the function to concatenate and save the match charting overview stats
-concatenate_and_save_match_charting_overview_stats()
+concatenate_and_save_match_charting_overview_stats('atp')
+concatenate_and_save_match_charting_overview_stats('wta')
 
 # %%
 
 
-@st.cache_data
+@ st.cache_data
 def get_player_match_subset_against_tour(user_selected_player):
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/atp_matches_master.parquet'
     # Read the master parquet file
@@ -207,7 +277,7 @@ def get_player_match_subset_against_tour(user_selected_player):
 # %%
 
 
-@st.cache_data
+@ st.cache_data
 def get_match_charting_master_against_tour(user_selected_player):
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_master_data.parquet'
     # Read the master parquet file
@@ -222,7 +292,7 @@ def get_match_charting_master_against_tour(user_selected_player):
 # %%
 
 
-@st.cache_data
+@ st.cache_data
 def get_match_charting_overview_stats_against_tour():
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/match_charting_overview_stats.parquet'
     # Read the master parquet file
@@ -750,7 +820,7 @@ def get_feature_importance_xgboost(X, y):
 
 
 # %%
-@st.cache_data
+@ st.cache_data
 def load_data_selected_player_against_tour(user_selected_player, df_concat_subset):
     # get match charting master data for the selected player
     df_match_charting_master = get_match_charting_master_against_tour(
