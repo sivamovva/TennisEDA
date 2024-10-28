@@ -19,14 +19,14 @@ def plot_yearly_win_rate_trend(df_concat_subset_grouped_by_year, user_selected_p
         yaxis='y1',
         line=dict(color=win_percentage_color)
     ))
-
-    fig.add_trace(go.Scatter(
+    # Add bar trace for number of matches played
+    fig.add_trace(go.Bar(
         x=df_concat_subset_grouped_by_year['year'],
         y=df_concat_subset_grouped_by_year['Number_of_Matches_Played'],
-        mode='lines+markers',
         name='Number of Matches Played',
         yaxis='y2',
-        line=dict(color=matches_played_color)
+        marker=dict(color=matches_played_color),
+        opacity=0.6
     ))
 
     # Update layout for dual y-axes
