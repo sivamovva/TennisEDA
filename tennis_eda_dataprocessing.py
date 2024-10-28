@@ -291,9 +291,6 @@ def get_win_rate_by_year(df_concat_subset, user_selected_player):
     df_concat_subset_grouped_by_year = df_concat_subset_grouped_by_year[[
         'year', 'Number_of_Matches_Played', f'{user_selected_player}_win_percentage']]
 
-    df_concat_subset_grouped_by_year.to_csv(
-        f'selected_matchup_win_rate_by_year.csv', index=False)
-
     return df_concat_subset_grouped_by_year
 
 # %%
