@@ -17,6 +17,7 @@ st.set_page_config(
 )
 
 
+
 # %%
 # Title of the app
 st.title('Pro Tennis -  How do the most successful players win?')
@@ -25,6 +26,18 @@ st.title('Pro Tennis -  How do the most successful players win?')
 # Text to display with typing effect
 intro_text = "In this data app, we will analyze the players who have played at least 150 ATP matches since 1990 (about 400 out of the >3000 professionals) and see the factors that determined whether they won or lost a match"
 st.write(intro_text)
+
+# Sidebar with information
+st.sidebar.title("About")
+st.sidebar.info(
+    """
+    This app provides an analysis of professional tennis players' performance from 1990 to 2024 October. Currently, the app shows player's performance against rest of the tour and if there is enough detailed match data
+    to learn patterns from, it also shows the key factors that impact result of a match. The data is sourced from Jeff Sackmann's GitHub repository under the Creative Commons License. Thanks to Jeff and his collaborators for making detailed match data 
+    available for analysis. 
+
+    The app (data analysis and training) is built by Siva Movva (https://www.linkedin.com/in/siva-movva-b6aab14/). It is a work in progress. Please feel free to reach out with any feedback or suggestions.
+    """
+)
 
 # Dropdown menu for selecting tour type
 tours = ['ATP', 'WTA']
