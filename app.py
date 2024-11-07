@@ -24,7 +24,7 @@ st.title('Pro Tennis -  How do the most successful players win?')
 
 
 # Text to display with typing effect
-intro_text = "In this data app, we will analyze the players who have played at least 150 ATP matches since 1990 (about 400 out of the >3000 professionals) and see the factors that determined whether they won or lost a match"
+intro_text = "In this data app, we will analyze the players who have played at least 150 pro matches since 1990 and see the factors that determined whether they won or lost a match"
 st.write(intro_text)
 
 # Sidebar with information
@@ -175,8 +175,7 @@ if user_selected_tour:
             with tab2:
                 st.header(f"Factors important for opponent win")
                 try:
-                    st.header(
-                        f'XGBoost Feature Importance specific to opponent win')
+                    
                     X2 = df_final_for_training_user_selected_p1p2_feature_aligned.drop(
                         columns=[f'target_{user_selected_player}_win', 'target_opponent_win',
                                  'match_id', 'custom_match_id', 'year', 'winner_name',
