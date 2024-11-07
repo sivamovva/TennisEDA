@@ -273,6 +273,109 @@ def concatenate_and_save_match_charting_return_depth(tour):
     # save the data to a parquet file
     df_concat.to_parquet(f'{tour}_match_charting_return_depth.parquet', index=False)
 
+#%%
+def concatenate_and_save_match_charting_keypts_return(tour):
+    dfs = []
+    if tour == 'atp':
+        match_charting_keypts_return = match_charting_keypts_return_atp
+    elif tour == 'wta':
+        match_charting_keypts_return = match_charting_keypts_return_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
+        return
+
+    for csv_file in match_charting_keypts_return:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.concat(dfs, ignore_index=True)
+
+    # get subset of rows where row is 'RTotal'
+    df_concat = df_concat[df_concat['row'] == 'RTotal']
+    # create percentage column for pts_won
+    df_concat['return_key_pts_won_perc'] = df_concat['pts_won'] * 100 / df_concat['pts']
+    # round the percentage column to nearest integer
+    df_concat['return_key_pts_won_perc'] = round(df_concat['return_key_pts_won_perc'], 0).astype(int)
+
+    df_concat.to_parquet(f'{tour}_match_charting_keypts_return.parquet', index=False)
+
+#%%
+def concatenate_and_save_match_charting_keypts_serve(tour):
+    dfs = []
+    if tour == 'atp':
+        match_charting_keypts_serve = match_charting_keypts_serve_atp
+    elif tour == 'wta':
+        match_charting_keypts_serve = match_charting_keypts_serve_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
+        return
+
+    for csv_file in match_charting_keypts_serve:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.concat(dfs, ignore_index=True)
+
+    # get subset of rows where row is 'STotal'
+    df_concat = df_concat[df_concat['row'] == 'STotal']
+    # create percentage column for pts_won
+    df_concat['serve_key_pts_won_perc'] = df_concat['pts_won'] * 100 / df_concat['pts']
+    # round the percentage column to nearest integer
+    df_concat['serve_key_pts_won_perc'] = round(df_concat['serve_key_pts_won_perc'], 0).astype(int)
+
+    df_concat.to_parquet(f'{tour}_match_charting_keypts_serve.parquet', index=False)
+
+#%%
+def concatenate_and_save_match_charting_shot_direction_outcomes(tour):
+    dfs = []
+    if tour == 'atp':
+        match_charting_shot_direction_outcomes = match_sharting_short_direction_outcomes_atp
+    elif tour == 'wta':
+        match_charting_shot_direction_outcomes = match_sharting_short_direction_outcomes_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
+        return
+
+    for csv_file in match_charting_shot_direction_outcomes:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.concat(dfs, ignore_index=True)
+
+    # data integrity check
+    df_concat['data_check'] = df_concat['shots'] == (df_concat['shots_in_pts_won'] + df_concat['shots_in_pts_lost'])
+
+    # get subset of rows where data_check is True
+    df_concat = df_concat[df_concat['data_check'] == True]
+
+    # create column for shot effectiveness - the probability of winning the point given the shot direction was involed in the point
+    df_concat['shot_effectiveness_perc'] = df_concat['shots_in_pts_won'] * 100 / (df_concat['shots_in_pts_won'] + df_concat['shots_in_pts_lost'])
+
+    # round the shot effectiveness column to nearest integer
+    df_concat['shot_effectiveness_perc'] = round(df_concat['shot_effectiveness_perc'], 0).astype(int)
+
+
+    # Save the concatenated DataFrame as a parquet file
+    df_concat.to_parquet(f'{tour}_match_charting_shot_direction_outcomes.parquet', index=False)
+
 # %%
 # Call the function to concatenate and save the match summaries for both the tours. Note, this
 # call wont happen everytime the app loads. This is run offline and the parquet files are saved in the repo
@@ -294,8 +397,19 @@ concatenate_and_save_match_charting_return_depth('wta')
 
 
 #%%
+# call the function to save key points return data
+concatenate_and_save_match_charting_keypts_return('atp')
+concatenate_and_save_match_charting_keypts_return('wta')
+#%%
+# call the function to save key points on serve data
+concatenate_and_save_match_charting_keypts_serve('atp')
+concatenate_and_save_match_charting_keypts_serve('wta')
+#%%
+# call the function to save shot direction outcomes data
+concatenate_and_save_match_charting_shot_direction_outcomes('atp')
+concatenate_and_save_match_charting_shot_direction_outcomes('wta')
 
-
+#%%
 @ st.cache_data
 def get_player_match_subset_against_tour(user_selected_player, user_selected_tour):
     master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_matches_master.parquet'
