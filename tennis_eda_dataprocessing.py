@@ -85,6 +85,7 @@ match_charting_keypts_serve_atp = ['charting-m-stats-KeyPointsServe.csv']
 match_charting_keypts_serve_wta = ['charting-w-stats-KeyPointsServe.csv']
 
 
+
 # Base URL for the raw content of the CSV files
 csv_base_url_match_summary_atp = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_summaries_atp}/{data_source_branch}/'
 csv_base_url_match_summary_wta = f'https://raw.githubusercontent.com/{data_source_user}/{data_source_repo_match_summaries_wta}/{data_source_branch}/'
@@ -218,6 +219,59 @@ def concatenate_and_save_match_charting_overview_stats(tour):
     df_concat.to_parquet(
         f'{tour}_match_charting_overview_stats.parquet', index=False)
 
+#%%
+# define function to take tour as argument and save the return depth data as a parquet file in my repo
+def concatenate_and_save_match_charting_return_depth(tour):
+    dfs = []
+    if tour == 'atp':
+        match_charting_return_depth = match_charting_return_depth_atp
+    elif tour == 'wta':
+        match_charting_return_depth = match_charting_return_depth_wta
+    else:
+        print("Invalid tour selected. Please select either 'atp' or 'wta'")
+        return
+
+    for csv_file in match_charting_return_depth:
+        url = csv_base_url_match_charting + csv_file
+        response = requests.get(url)
+        if response.status_code == 200:
+            csv_data = StringIO(response.text)
+            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            dfs.append(df)
+        else:
+            print(f"Failed to fetch {csv_file}")
+
+    df_concat = pd.concat(dfs, ignore_index=True)
+    # just get a subset of rows where row is 'Total'
+    df_concat = df_concat[df_concat['row'] == 'Total']
+    # data check
+    df_concat['shallow+deep+unforced'] = df_concat['shallow'] + \
+        df_concat['deep'] + df_concat['unforced']
+    
+
+    # get a ratio of returnable and sum of shallow, deep and unforced. If round of ratio is 1 (close enough), then it is good
+    df_concat['ratio'] = df_concat['returnable'] / \
+        df_concat['shallow+deep+unforced']
+    df_concat['ratio_round'] = df_concat['ratio'].round(0)
+
+    # get subset of rows where ratio_round is 1
+    df_concat = df_concat[df_concat['ratio_round'] == 1]
+
+    # create percentage columns for percentage of shallow, deep and unforced
+    df_concat['shallow_perc'] = df_concat['shallow'] * 100 / \
+        df_concat['returnable']
+    df_concat['deep_perc'] = df_concat['deep'] * 100 / df_concat['returnable']
+    df_concat['unforced_perc'] = df_concat['unforced'] * 100 / \
+        df_concat['returnable']
+    
+    # round the percentage columns to nearest integer
+    df_concat['shallow_perc'] = round(df_concat['shallow_perc'], 0).astype(int)
+    df_concat['deep_perc'] = round(df_concat['deep_perc'],0).astype(int)
+    df_concat['unforced_perc'] = round(df_concat['unforced_perc'],0).astype(int)
+
+    
+    # save the data to a parquet file
+    df_concat.to_parquet(f'{tour}_match_charting_return_depth.parquet', index=False)
 
 # %%
 # Call the function to concatenate and save the match summaries for both the tours. Note, this
@@ -234,6 +288,12 @@ concatenate_and_save_match_charting_overview_stats('atp')
 concatenate_and_save_match_charting_overview_stats('wta')
 
 # %%
+# call the function to save return depth data
+concatenate_and_save_match_charting_return_depth('atp')
+concatenate_and_save_match_charting_return_depth('wta')
+
+
+#%%
 
 
 @ st.cache_data
