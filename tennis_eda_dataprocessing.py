@@ -512,6 +512,24 @@ def get_match_charting_return_depth_against_tour(user_selected_player, user_sele
     return df_concat_subset
 
 #%%
+@st.cache_data
+def get_match_charting_shot_direction_outcomes_against_tour(user_selected_player, user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_match_charting_shot_direction_outcomes.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of match_id where the selected player is involved
+    match_ids = df_concat.query('player == @user_selected_player')['match_id'].unique()
+    
+    # get subset of the data where match_id is in match_ids
+    df_concat_subset = df_concat[df_concat['match_id'].isin(match_ids)]
+
+    # return the match charting shot direction outcomes data for the selected player
+    return df_concat_subset
+
+
+
+#%%
 
 
 @ st.cache_data
@@ -576,6 +594,9 @@ def merge_return_depth_data(df_merged_features_jumbled_additional_features, df_m
     return df_merged_features_jumbled_additional_features
 
 # %%
+
+
+#%%
 
 
 def get_win_rate_by_year(df_concat_subset, user_selected_player):
@@ -729,9 +750,8 @@ def align_features_with_selected_player_vs_rest_of_tour_and_create_target(df, us
         'aces_perc', 'dfs_perc',
         'first_in_perc', 'first_won_perc', 'second_won_perc', 'bp_saved_perc',
         'return_pts_won_perc', 'winners_unforced_perc', 'winner_fh_perc', 'winners_bh_perc',
-        'unforced_fh_perc', 'unforced_bh_perc'
-    ]
-
+        'unforced_fh_perc', 'unforced_bh_perc','return_key_pts_won_perc', 'serve_key_pts_won_perc', 'shallow_perc', 'deep_perc', 'unforced_perc']
+    
     player_independent_feature_columns = [
         'winner_loser_rank_diff', 'tight_match', 'Surface']
 
@@ -909,6 +929,8 @@ def load_data_selected_player_against_tour(user_selected_player, user_selected_t
 
     # merge return depth data with the df_merged_features_jumbled_additional_features
     df_merged_features_jumbled_additional_features = merge_return_depth_data(df_merged_features_jumbled_additional_features, df_match_charting_return_depth)
+
+    
     
     # now align features with user_selected_player1 and user_selected_player2 instead of winner_loser
     # this is to explore if feature importance is different for the 2 different players. Idea is to train the model only on the subset
