@@ -465,6 +465,54 @@ def get_match_charting_master_against_tour(user_selected_player, user_selected_t
     return df_concat_subset
 # %%
 
+@st.cache_data
+def get_match_charting_keypts_return_against_tour(user_selected_player, user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_match_charting_keypts_return.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of match_id where the selected player is involved
+    match_ids = df_concat.query('player == @user_selected_player')['match_id'].unique()
+    
+    # get subset of the data where match_id is in match_ids
+    df_concat_subset = df_concat[df_concat['match_id'].isin(match_ids)]
+
+    # return the match charting key points return data for the selected player
+    return df_concat_subset
+
+#%%
+@st.cache_data
+def get_match_charting_keypts_serve_against_tour(user_selected_player, user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_match_charting_keypts_serve.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of match_id where the selected player is involved
+    match_ids = df_concat.query('player == @user_selected_player')['match_id'].unique()
+    
+    # get subset of the data where match_id is in match_ids
+    df_concat_subset = df_concat[df_concat['match_id'].isin(match_ids)]
+
+    # return the match charting key points serve data for the selected player
+    return df_concat_subset
+#%%
+@st.cache_data
+def get_match_charting_return_depth_against_tour(user_selected_player, user_selected_tour):
+    master_file_url = f'https://raw.githubusercontent.com/{my_username}/{my_repo}/{my_branch}/{user_selected_tour}_match_charting_return_depth.parquet'
+    # Read the master parquet file
+    df_concat = pd.read_parquet(master_file_url)
+
+    # Get the subset of match_id where the selected player is involved
+    match_ids = df_concat.query('player == @user_selected_player')['match_id'].unique()
+    
+    # get subset of the data where match_id is in match_ids
+    df_concat_subset = df_concat[df_concat['match_id'].isin(match_ids)]
+
+    # return the match charting return depth data for the selected player
+    return df_concat_subset
+
+#%%
+
 
 @ st.cache_data
 def get_match_charting_overview_stats_against_tour(user_selected_tour):
@@ -475,6 +523,57 @@ def get_match_charting_overview_stats_against_tour(user_selected_tour):
     # return the match charting overview stats data for the selected player
     return df_concat
 
+#%%
+# define function to merge df_match_charting_keypts_return to df_merged_features_jumbled_additional_features
+def merge_keypts_return_data(df_merged_features_jumbled_additional_features, df_match_charting_keypts_return):
+    # first get player 1, player 2 info
+    df_match_charting_keypts_return = pd.merge(df_match_charting_keypts_return, df_merged_features_jumbled_additional_features[['match_id','Player 1','Player 2']], on='match_id', how='left')
+
+    # then add a serve order column
+    df_match_charting_keypts_return['player_serve_order'] = np.where(df_match_charting_keypts_return['Player 1'] == df_match_charting_keypts_return['player'], 'p1', 'p2')
+
+    # now pivot the data such that there are separate columns for p1 and p2
+    df_match_charting_keypts_return_pivot = df_match_charting_keypts_return.pivot(index='match_id', columns='player_serve_order', values='return_key_pts_won_perc').reset_index()
+    df_match_charting_keypts_return_pivot.columns = ['match_id', 'p1_return_key_pts_won_perc', 'p2_return_key_pts_won_perc']
+
+    # merge the data with df_merged_features_jumbled_additional_features
+    df_merged_features_jumbled_additional_features = pd.merge(df_merged_features_jumbled_additional_features, df_match_charting_keypts_return_pivot, on='match_id', how='left')
+
+    return df_merged_features_jumbled_additional_features
+
+#%%
+def merge_keypts_serve_data(df_merged_features_jumbled_additional_features, df_match_charting_keypts_serve):
+    # first get player 1, player 2 info
+    df_match_charting_keypts_serve = pd.merge(df_match_charting_keypts_serve, df_merged_features_jumbled_additional_features[['match_id','Player 1','Player 2']], on='match_id', how='left')
+
+    # then add a serve order column
+    df_match_charting_keypts_serve['player_serve_order'] = np.where(df_match_charting_keypts_serve['Player 1'] == df_match_charting_keypts_serve['player'], 'p1', 'p2')
+
+    # now pivot the data such that there are separate columns for p1 and p2
+    df_match_charting_keypts_serve_pivot = df_match_charting_keypts_serve.pivot(index='match_id', columns='player_serve_order', values='serve_key_pts_won_perc').reset_index()
+    df_match_charting_keypts_serve_pivot.columns = ['match_id', 'p1_serve_key_pts_won_perc', 'p2_serve_key_pts_won_perc']
+
+    # merge the data with df_merged_features_jumbled_additional_features
+    df_merged_features_jumbled_additional_features = pd.merge(df_merged_features_jumbled_additional_features, df_match_charting_keypts_serve_pivot, on='match_id', how='left')
+
+    return df_merged_features_jumbled_additional_features
+
+#%%
+def merge_return_depth_data(df_merged_features_jumbled_additional_features, df_match_charting_return_depth):
+    # first get player 1, player 2 info
+    df_match_charting_return_depth = pd.merge(df_match_charting_return_depth, df_merged_features_jumbled_additional_features[['match_id','Player 1','Player 2']], on='match_id', how='left')
+
+    # then add a serve order column
+    df_match_charting_return_depth['player_serve_order'] = np.where(df_match_charting_return_depth['Player 1'] == df_match_charting_return_depth['player'], 'p1', 'p2')
+
+    # now pivot the data such that there are separate columns for p1 and p2
+    df_match_charting_return_depth_pivot = df_match_charting_return_depth.pivot(index='match_id', columns='player_serve_order', values=['shallow_perc', 'deep_perc', 'unforced_perc']).reset_index()
+    df_match_charting_return_depth_pivot.columns = ['match_id', 'p1_shallow_perc', 'p2_shallow_perc', 'p1_deep_perc', 'p2_deep_perc', 'p1_unforced_perc', 'p2_unforced_perc']
+
+    # merge the data with df_merged_features_jumbled_additional_features
+    df_merged_features_jumbled_additional_features = pd.merge(df_merged_features_jumbled_additional_features, df_match_charting_return_depth_pivot, on='match_id', how='left')
+
+    return df_merged_features_jumbled_additional_features
 
 # %%
 
@@ -761,6 +860,8 @@ def load_data_selected_player_against_tour(user_selected_player, user_selected_t
 
     df_match_charting_overview_stats = pd.merge(
         df_match_charting_overview_stats, df_match_charting_master[['match_id', 'Player 1', 'Player 2']], on='match_id')
+    
+
 
     # Set the 'player_serve_order' column
     def set_serve_order(row):
@@ -790,7 +891,25 @@ def load_data_selected_player_against_tour(user_selected_player, user_selected_t
     # Apply the function to create additional features
     df_merged_features_jumbled_additional_features = create_additional_features(
         df_merged_features_jumbled.copy())
+    
+    # get keypts return data for selected player
+    df_match_charting_keypts_return = get_match_charting_keypts_return_against_tour(user_selected_player, user_selected_tour)
+    
+    # merge keypts return data with the df_merged_features_jumbled_additional_features
+    df_merged_features_jumbled_additional_features = merge_keypts_return_data(df_merged_features_jumbled_additional_features, df_match_charting_keypts_return)
 
+    # get keypts serve data for selected player
+    df_match_charting_keypts_serve = get_match_charting_keypts_serve_against_tour(user_selected_player, user_selected_tour)
+
+    # merge keypts serve data with the df_merged_features_jumbled_additional_features
+    df_merged_features_jumbled_additional_features = merge_keypts_serve_data(df_merged_features_jumbled_additional_features, df_match_charting_keypts_serve)
+
+    # get return depth data for selected player
+    df_match_charting_return_depth = get_match_charting_return_depth_against_tour(user_selected_player, user_selected_tour)
+
+    # merge return depth data with the df_merged_features_jumbled_additional_features
+    df_merged_features_jumbled_additional_features = merge_return_depth_data(df_merged_features_jumbled_additional_features, df_match_charting_return_depth)
+    
     # now align features with user_selected_player1 and user_selected_player2 instead of winner_loser
     # this is to explore if feature importance is different for the 2 different players. Idea is to train the model only on the subset
     # of features related to 1 player and see what are the features of importance for that player to win over the other player
