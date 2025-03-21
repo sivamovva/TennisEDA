@@ -29,18 +29,23 @@ def plot_yearly_win_rate_trend(df_concat_subset_grouped_by_year, user_selected_p
         opacity=0.6
     ))
 
+
     # Update layout for dual y-axes
     fig.update_layout(
         title=f'{user_selected_player} Performance timeline',
         xaxis=dict(title='Year'),
         yaxis=dict(
-            title=f'{user_selected_player} Win Percentage',
-            titlefont=dict(color=win_percentage_color),
+            title=dict(
+                text=f'{user_selected_player} Win Percentage',
+                font=dict(color=win_percentage_color)
+            ),
             tickfont=dict(color=win_percentage_color)
         ),
         yaxis2=dict(
-            title='Number of Matches Played',
-            titlefont=dict(color=matches_played_color),
+            title=dict(
+                text='Number of Matches Played',
+                font=dict(color=matches_played_color)
+            ),
             tickfont=dict(color=matches_played_color),
             overlaying='y',
             side='right'
